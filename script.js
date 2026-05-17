@@ -1,120 +1,127 @@
 // DOM এলিমেন্টস
-const predictionNumber = document.getElementById('predictionNumber');
-const predictionSize = document.getElementById('predictionSize');
-const predictionColor = document.getElementById('predictionColor');
-const periodDisplay = document.getElementById('periodNumberDisplay');
-const countdownTimer = document.getElementById('countdownTimer');
-const timeModeText = document.getElementById('timeModeText');
+const periodDisplay = document.getElementById('periodDisplay');
+const timerSecondsSpan = document.getElementById('timerSeconds');
+const predictionNumberSpan = document.getElementById('predictionNumber');
+const sizeValueSpan = document.getElementById('sizeValue');
+const colorValueSpan = document.getElementById('colorValue');
+const timeModeLabel = document.getElementById('timeModeLabel');
+const statusBarSpan = document.querySelector('#statusBar span');
+const statusBarDiv = document.getElementById('statusBar');
+
+// মোডাল এলিমেন্টস
+const modalOverlay = document.getElementById('modalOverlay');
+const settingsIcon = document.getElementById('settingsIcon');
+const closeModalBtn = document.getElementById('closeModalBtn');
 const periodInput = document.getElementById('periodInput');
 const timeOptions = document.querySelectorAll('.time-option');
-const saveStartBtn = document.getElementById('saveStartBtn');
-const stopResetBtn = document.getElementById('stopResetBtn');
+const modalStartBtn = document.getElementById('modalStartBtn');
+const modalStopBtn = document.getElementById('modalStopBtn');
 
-// সেটিংস প্যানেল ড্র্যাগ
-const settingsPanel = document.getElementById('settingsPanel');
-const dragHandle = document.getElementById('dragHandle');
-const smallBtn = document.getElementById('makeSmall');
-const largeBtn = document.getElementById('makeLarge');
+// কার্ড এলিমেন্টস (হাইলাইটের জন্য)
+const sizeCard = document.getElementById('sizeCard');
+const colorCard = document.getElementById('colorCard');
+const numberBoxSpan = document.querySelector('#numberBox span');
 
-// স্টেট
-let selectedTimeSec = 30;
+// স্টেট ভ্যারিয়েবল
+let selectedTimeSec = 30;    // 30 বা 60
 let currentPeriod = 11181;
 let timerInterval = null;
 let isActive = false;
 let timeLeft = 0;
 
-// র্যান্ডম সিগন্যাল জেনারেটর + কালার হাইলাইট
+// ========= র‍্যান্ডম সিগন্যাল জেনারেটর =========
 function generateRandomSignal() {
     const number = Math.floor(Math.random() * 10);
     let size = "";
     let color = "";
-    let colorClass = "";
+    let colorType = ""; // green, red, violet
 
     if (number === 0) {
         size = "SMALL";
         color = "VIOLET / RED";
-        colorClass = "color-violet";
+        colorType = "violet";
     } 
     else if (number === 5) {
         size = "BIG";
         color = "VIOLET / GREEN";
-        colorClass = "color-violet";
+        colorType = "violet";
     }
     else if ([1, 3, 7, 9].includes(number)) {
         size = "SMALL";
         color = "GREEN";
-        colorClass = "color-green";
+        colorType = "green";
     }
     else if ([2, 4, 6, 8].includes(number)) {
         size = "BIG";
         color = "RED";
-        colorClass = "color-red";
+        colorType = "red";
     }
 
-    return { number, size, color, colorClass };
+    return { number, size, color, colorType };
 }
 
-// UI আপডেট (হাইলাইট সহ)
+// ========= UI আপডেট + কালার হাইলাইট =========
 function updatePredictionUI() {
-    const { number, size, color, colorClass } = generateRandomSignal();
+    const { number, size, color, colorType } = generateRandomSignal();
     
-    // এনিমেশন
-    predictionNumber.classList.remove('animate-pop');
-    predictionSize.classList.remove('animate-pop');
-    predictionColor.classList.remove('animate-pop');
+    // এনিমেশন রি-ট্রিগার
+    predictionNumberSpan.classList.remove('animate-pop');
+    sizeValueSpan.classList.remove('animate-pop');
+    colorValueSpan.classList.remove('animate-pop');
     
-    void predictionNumber.offsetWidth;
+    void predictionNumberSpan.offsetWidth;
     
-    // নাম্বার আপডেট
-    predictionNumber.textContent = number;
-    predictionSize.textContent = size;
-    predictionColor.textContent = color;
+    // টেক্সট আপডেট
+    predictionNumberSpan.textContent = number;
+    sizeValueSpan.textContent = size;
+    colorValueSpan.textContent = color;
     
-    // কালার হাইলাইট (যে ক্যাটাগরিতে পড়ে)
-    predictionNumber.className = 'prediction-number animate-pop ' + colorClass;
+    // আগের হাইলাইট ক্লাস রিমুভ
+    numberBoxSpan.classList.remove('color-green-text', 'color-red-text', 'color-violet-text');
+    sizeCard.classList.remove('bg-green-light', 'bg-red-light', 'bg-violet-light');
+    colorCard.classList.remove('bg-green-light', 'bg-red-light', 'bg-violet-light');
     
-    // সাইজ বক্সের ব্যাকগ্রাউন্ড হাইলাইট
-    const sizeBox = document.querySelector('.size-box');
-    const colorBox = document.querySelector('.color-box');
-    
-    sizeBox.classList.remove('bg-green', 'bg-red', 'bg-violet');
-    colorBox.classList.remove('bg-green', 'bg-red', 'bg-violet');
-    
-    if (color.includes('GREEN')) {
-        sizeBox.classList.add('bg-green');
-        colorBox.classList.add('bg-green');
-    } else if (color.includes('RED')) {
-        sizeBox.classList.add('bg-red');
-        colorBox.classList.add('bg-red');
-    } else if (color.includes('VIOLET')) {
-        sizeBox.classList.add('bg-violet');
-        colorBox.classList.add('bg-violet');
+    // নতুন হাইলাইট অ্যাড
+    if (colorType === 'green') {
+        numberBoxSpan.classList.add('color-green-text');
+        sizeCard.classList.add('bg-green-light');
+        colorCard.classList.add('bg-green-light');
+    } else if (colorType === 'red') {
+        numberBoxSpan.classList.add('color-red-text');
+        sizeCard.classList.add('bg-red-light');
+        colorCard.classList.add('bg-red-light');
+    } else if (colorType === 'violet') {
+        numberBoxSpan.classList.add('color-violet-text');
+        sizeCard.classList.add('bg-violet-light');
+        colorCard.classList.add('bg-violet-light');
     }
     
-    predictionSize.classList.add('animate-pop');
-    predictionColor.classList.add('animate-pop');
+    // এনিমেশন অ্যাড
+    predictionNumberSpan.classList.add('animate-pop');
+    sizeValueSpan.classList.add('animate-pop');
+    colorValueSpan.classList.add('animate-pop');
 }
 
-// কাউন্টডাউন স্টার্ট
+// ========= কাউন্টডাউন স্টার্ট =========
 function startCountdown(seconds) {
     if (timerInterval) clearInterval(timerInterval);
     timeLeft = seconds;
-    countdownTimer.innerText = timeLeft;
+    timerSecondsSpan.innerText = timeLeft;
     
     timerInterval = setInterval(() => {
         if (!isActive) return;
         if (timeLeft <= 1) {
             clearInterval(timerInterval);
-            countdownTimer.innerText = 0;
+            timerSecondsSpan.innerText = 0;
             onRoundComplete();
         } else {
             timeLeft--;
-            countdownTimer.innerText = timeLeft;
+            timerSecondsSpan.innerText = timeLeft;
         }
     }, 1000);
 }
 
-// রাউন্ড শেষ হলে
+// রাউন্ড শেষ: পিরিয়ড বাড়াও, নতুন সিগন্যাল দাও
 function onRoundComplete() {
     if (!isActive) return;
     currentPeriod++;
@@ -124,7 +131,7 @@ function onRoundComplete() {
     startCountdown(selectedTimeSec);
 }
 
-// সেভ ও শুরু
+// ========= সেভ & স্টার্ট (মোডাল থেকে কল হবে) =========
 function saveAndStart() {
     if (timerInterval) clearInterval(timerInterval);
     
@@ -138,8 +145,12 @@ function saveAndStart() {
     startCountdown(selectedTimeSec);
     
     // স্ট্যাটাস আপডেট
-    document.querySelector('.status-bar span').innerHTML = '🟢 চলছে...';
-    document.querySelector('.status-bar').style.background = '#00aa5533';
+    statusBarSpan.innerHTML = '🟢 চলছে';
+    statusBarDiv.style.background = '#00aa5533';
+    statusBarSpan.style.color = '#aaffaa';
+    
+    // মোডাল বন্ধ করো
+    modalOverlay.classList.remove('show');
 }
 
 // স্টপ/রিসেট
@@ -149,119 +160,77 @@ function stopAndReset() {
         timerInterval = null;
     }
     isActive = false;
-    countdownTimer.innerText = "0";
+    timerSecondsSpan.innerText = "0";
     
-    currentPeriod = parseInt(periodInput.value);
+    // পিরিয়ড ইনপুট থেকে রিসেট না করে শুধু থামানো
     periodDisplay.innerText = currentPeriod;
     
-    predictionNumber.textContent = "?";
-    predictionSize.textContent = "---";
-    predictionColor.textContent = "-----";
-    predictionNumber.className = 'prediction-number';
+    // ডিফল্ট প্লেসহোল্ডার দেখাও
+    predictionNumberSpan.textContent = "?";
+    sizeValueSpan.textContent = "---";
+    colorValueSpan.textContent = "-----";
+    numberBoxSpan.classList.remove('color-green-text', 'color-red-text', 'color-violet-text');
+    sizeCard.classList.remove('bg-green-light', 'bg-red-light', 'bg-violet-light');
+    colorCard.classList.remove('bg-green-light', 'bg-red-light', 'bg-violet-light');
     
-    document.querySelector('.status-bar span').innerHTML = '⚫ বন্ধ';
-    document.querySelector('.status-bar').style.background = '#33333355';
+    statusBarSpan.innerHTML = '⚫ বন্ধ';
+    statusBarDiv.style.background = '#33333355';
+    statusBarSpan.style.color = '#ccc';
 }
 
-// টাইমার অপশন
+// ========= টাইমার অপশন সিলেক্ট (মোডালের ভিতর) =========
 timeOptions.forEach(btn => {
     btn.addEventListener('click', () => {
         const timeVal = parseInt(btn.getAttribute('data-time'));
         selectedTimeSec = timeVal;
-        
         timeOptions.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
-        // হেডারে টেক্সট আপডেট
+        // হেডারের টেক্সট পরিবর্তন
         if (selectedTimeSec === 30) {
-            timeModeText.innerText = '30 SECOND';
+            timeModeLabel.innerText = "30 SECOND";
         } else {
-            timeModeText.innerText = '1 MINUTE';
+            timeModeLabel.innerText = "1 MINUTE";
         }
     });
 });
 
-// ডিফল্ট সিলেক্ট
+// ডিফল্ট 30 সেকেন্ড সিলেক্টেড
 document.querySelector('.time-option[data-time="30"]').classList.add('active');
 
-// ========= ড্র্যাগেবল ফাংশন =========
-let isDragging = false;
-let offsetX, offsetY;
-
-dragHandle.addEventListener('mousedown', (e) => {
-    if (e.target.closest('.resize-controls')) return;
-    isDragging = true;
-    offsetX = e.clientX - settingsPanel.offsetLeft;
-    offsetY = e.clientY - settingsPanel.offsetTop;
-    settingsPanel.style.cursor = 'grabbing';
-    e.preventDefault();
+// ========= মোডাল কন্ট্রোল =========
+settingsIcon.addEventListener('click', () => {
+    // মোডালে বর্তমান মান সেট করো
+    periodInput.value = currentPeriod;
+    // টাইম অপশন অনুযায়ী active সেট (UI তে আগে থেকেই আছে)
+    modalOverlay.classList.add('show');
 });
 
-window.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    let left = e.clientX - offsetX;
-    let top = e.clientY - offsetY;
-    left = Math.min(window.innerWidth - settingsPanel.offsetWidth - 10, Math.max(10, left));
-    top = Math.min(window.innerHeight - settingsPanel.offsetHeight - 10, Math.max(10, top));
-    settingsPanel.style.left = left + 'px';
-    settingsPanel.style.top = top + 'px';
-    settingsPanel.style.right = 'auto';
-    settingsPanel.style.transform = 'none';
+closeModalBtn.addEventListener('click', () => {
+    modalOverlay.classList.remove('show');
 });
 
-window.addEventListener('mouseup', () => {
-    isDragging = false;
-    settingsPanel.style.cursor = 'grab';
+modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) {
+        modalOverlay.classList.remove('show');
+    }
 });
 
-// টাচ সাপোর্ট
-dragHandle.addEventListener('touchstart', (e) => {
-    if (e.target.closest('.resize-controls')) return;
-    const touch = e.touches[0];
-    isDragging = true;
-    offsetX = touch.clientX - settingsPanel.offsetLeft;
-    offsetY = touch.clientY - settingsPanel.offsetTop;
-    e.preventDefault();
+modalStartBtn.addEventListener('click', saveAndStart);
+modalStopBtn.addEventListener('click', () => {
+    stopAndReset();
+    modalOverlay.classList.remove('show');
 });
 
-window.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    const touch = e.touches[0];
-    let left = touch.clientX - offsetX;
-    let top = touch.clientY - offsetY;
-    left = Math.min(window.innerWidth - settingsPanel.offsetWidth - 10, Math.max(10, left));
-    top = Math.min(window.innerHeight - settingsPanel.offsetHeight - 10, Math.max(10, top));
-    settingsPanel.style.left = left + 'px';
-    settingsPanel.style.top = top + 'px';
-    settingsPanel.style.right = 'auto';
-    settingsPanel.style.transform = 'none';
-});
-
-window.addEventListener('touchend', () => {
-    isDragging = false;
-});
-
-// রিসাইজ ফাংশন
-smallBtn.addEventListener('click', () => {
-    settingsPanel.classList.remove('large-mode');
-    settingsPanel.classList.add('small-mode');
-});
-
-largeBtn.addEventListener('click', () => {
-    settingsPanel.classList.remove('small-mode');
-    settingsPanel.classList.add('large-mode');
-});
-
-// প্রিভিউ লোড
+// ========= প্রিভিউ লোড (পেজ ওপেনে এলোমেলো সিগন্যাল) =========
 function initialPreview() {
-    const { number, size, color, colorClass } = generateRandomSignal();
-    predictionNumber.textContent = number;
-    predictionSize.textContent = size;
-    predictionColor.textContent = color;
-    predictionNumber.className = 'prediction-number ' + colorClass;
+    const { number, size, color, colorType } = generateRandomSignal();
+    predictionNumberSpan.textContent = number;
+    sizeValueSpan.textContent = size;
+    colorValueSpan.textContent = color;
+    // হালকা হাইলাইট ছাড়া প্রিভিউ
 }
 initialPreview();
 
-// বাটন ইভেন্ট
-saveStartBtn.addEventListener('click', saveAndStart);
-stopResetBtn.addEventListener('click', stopAndReset);
+// এক্সট্রা: iframe এর কোনো সমস্যা এড়াতে পিরিয়ড ফোকাস হলে স্ক্রল না
+periodInput.addEventListener('focus', (e) => e.stopPropagation());

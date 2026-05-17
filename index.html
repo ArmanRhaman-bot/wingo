@@ -2,101 +2,92 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WINGO প্রেডিকশন টুলস</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>WINGO প্রেডিকশন | ট্রেডিং টুল</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app-wrapper">
-    <!-- এম্বেড করা ওয়েবপেজ (hgnice.biz) -->
-    <div class="embed-container">
-        <iframe 
-            src="https://hgnice.biz/#/register?invitationCode=255721948910" 
-            title="WINGO ট্রেডিং প্ল্যাটফর্ম"
-            allow="accelerometer; clipboard-write; encrypted-media; fullscreen"
-            referrerpolicy="strict-origin">
+<div class="app-container">
+    <!-- এম্বেড করা লাইভ পেজ (hgnice.biz) -->
+    <div class="iframe-wrapper">
+        <iframe src="https://hgnice.biz/#/register?invitationCode=255721948910" 
+                title="WINGO ট্রেডিং প্ল্যাটফর্ম"
+                allow="accelerometer; clipboard-write; encrypted-media; fullscreen"
+                referrerpolicy="strict-origin">
         </iframe>
     </div>
 
-    <!-- বাম পাশে: প্রেডিকশন প্যানেল -->
-    <div class="prediction-panel" id="predictionPanel">
-        <div class="panel-header">
-            <span class="wingo-logo">🎲 WINGO</span>
-            <span class="time-mode" id="timeModeText">30 SECOND</span>
+    <!-- প্রেডিকশন উইজেট (মোবাইলের ১/৪ অংশ) -->
+    <div class="prediction-widget" id="predictionWidget">
+        <!-- হেডার: টাইটেল + সেটিংস আইকন -->
+        <div class="widget-header">
+            <div class="title">
+                <span class="wingo-badge">🎲 WINGO</span>
+                <span class="time-mode" id="timeModeLabel">30 SECOND</span>
+            </div>
+            <button class="settings-icon" id="settingsIcon">⚙️</button>
         </div>
-        
+
         <!-- পিরিয়ড নাম্বার -->
-        <div class="period-section">
-            <label>📋 পিরিয়ড নং</label>
-            <div class="period-number" id="periodNumberDisplay">11181</div>
+        <div class="period-row">
+            <label>পিরিয়ড নং</label>
+            <div class="period-value" id="periodDisplay">11181</div>
         </div>
 
-        <!-- কাউন্টডাউন টাইমার -->
-        <div class="timer-section">
-            <div class="countdown-circle" id="countdownCircle">
-                <span id="countdownTimer">30</span>
-                <small>সেকেন্ড</small>
-            </div>
+        <!-- কাউন্টডাউন টাইমার (সার্কেল) -->
+        <div class="timer-circle" id="timerCircle">
+            <span id="timerSeconds">30</span>
+            <small>সেকেন্ড</small>
         </div>
 
-        <!-- নাম্বার ডিসপ্লে -->
-        <div class="number-section">
-            <div class="prediction-number" id="predictionNumber">?</div>
+        <!-- এলোমেলো নাম্বার -->
+        <div class="number-box" id="numberBox">
+            <span id="predictionNumber">?</span>
         </div>
 
-        <!-- সাইজ ও কালার -->
-        <div class="result-section">
-            <div class="size-box" id="sizeBox">
+        <!-- সাইজ ও কালার ফলাফল -->
+        <div class="result-row">
+            <div class="size-card" id="sizeCard">
                 <span>সাইজ</span>
-                <strong id="predictionSize">---</strong>
+                <strong id="sizeValue">---</strong>
             </div>
-            <div class="color-box" id="colorBox">
+            <div class="color-card" id="colorCard">
                 <span>রং</span>
-                <strong id="predictionColor">-----</strong>
+                <strong id="colorValue">-----</strong>
             </div>
         </div>
 
-        <!-- স্ট্যাটাস বার -->
-        <div class="status-bar">
-            <span>🟢 সক্রিয়</span>
+        <!-- স্ট্যাটাস বার (active/inactive) -->
+        <div class="status-bar" id="statusBar">
+            <span>⚫ বন্ধ</span>
         </div>
     </div>
 
-    <!-- ডান পাশে: সেটিং প্যানেল (ড্র্যাগেবল) -->
-    <div class="settings-panel" id="settingsPanel">
-        <div class="settings-header" id="dragHandle">
-            <span>⚙️ সেটিংস</span>
-            <div class="resize-controls">
-                <button class="resize-btn" id="makeSmall">−</button>
-                <button class="resize-btn" id="makeLarge">+</button>
+    <!-- সেটিংস মোডাল (পপআপ) -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚙️ সেটিংস</h3>
+                <button class="close-modal" id="closeModalBtn">&times;</button>
             </div>
-        </div>
-
-        <div class="settings-body">
-            <div class="setting-group">
-                <label>পিরিয়ড সেট করুন</label>
-                <input type="number" id="periodInput" value="11181" min="1">
-            </div>
-
-            <div class="setting-group">
-                <label>টাইম সিলেক্ট</label>
-                <div class="timer-select">
-                    <button class="time-option" data-time="30">30 সেকেন্ড</button>
-                    <button class="time-option" data-time="60">1 মিনিট</button>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>পিরিয়ড নাম্বার</label>
+                    <input type="number" id="periodInput" value="11181" min="1">
                 </div>
-            </div>
-
-            <div class="setting-group">
-                <label>অ্যাকশন</label>
+                <div class="input-group">
+                    <label>টাইম সিলেক্ট</label>
+                    <div class="time-buttons">
+                        <button class="time-option" data-time="30">30 সেকেন্ড</button>
+                        <button class="time-option" data-time="60">1 মিনিট</button>
+                    </div>
+                </div>
                 <div class="action-buttons">
-                    <button id="saveStartBtn" class="btn-start">▶ শুরু</button>
-                    <button id="stopResetBtn" class="btn-stop">⏹ বন্ধ</button>
+                    <button id="modalStartBtn" class="btn-start">▶ শুরু</button>
+                    <button id="modalStopBtn" class="btn-stop">⏹ বন্ধ</button>
                 </div>
-            </div>
-
-            <div class="info-text">
-                <small>💡 প্রতি রাউন্ড শেষে নতুন সিগন্যাল দেখাবে</small>
+                <p class="modal-hint">💡 প্রতি রাউন্ড শেষে নতুন সিগন্যাল আসবে</p>
             </div>
         </div>
     </div>

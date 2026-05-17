@@ -3,55 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WINGO সিগন্যাল টুলস</title>
+    <title>WINGO প্রেডিকশন টুলস</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="app-wrapper">
-    <!-- ছোট সিগন্যাল উইজেট -->
-    <div class="signal-widget compact" id="signalWidget">
-        <div class="widget-header" id="dragHandle">
-            <div class="drag-handle">
-                <span>🎲</span> 
-                <span>WINGO</span>
-            </div>
-            <div class="resize-controls">
-                <button class="resize-btn" id="makeSmall" title="ছোট">−</button>
-                <button class="resize-btn" id="makeLarge" title="বড়">+</button>
-            </div>
-        </div>
-
-        <div class="signal-content">
-            <div class="signal-row">
-                <div class="signal-number" id="signalNumber">--</div>
-            </div>
-            <div class="signal-info">
-                <span class="signal-size" id="signalSize">---</span>
-                <span class="signal-color" id="signalColor">-----</span>
-            </div>
-        </div>
-
-        <div class="control-panel">
-            <div class="period-row">
-                <label>Period:</label>
-                <input type="number" id="periodNumber" value="1" min="1">
-                <div class="timer-buttons">
-                    <button class="timer-btn mini" data-time="30">30s</button>
-                    <button class="timer-btn mini" data-time="60">1m</button>
-                </div>
-            </div>
-            <div class="action-row">
-                <button id="saveStartBtn" class="action-start">▶ শুরু</button>
-                <button id="stopResetBtn" class="action-stop">⏹ বন্ধ</button>
-            </div>
-            <div class="status-row">
-                <span>⏱️ <span id="timerDisplay">0</span>s</span>
-                <span>📊 Period: <strong id="currentPeriodLabel">1</strong></span>
-            </div>
-        </div>
-    </div>
-
+    <!-- এম্বেড করা ওয়েবপেজ (hgnice.biz) -->
     <div class="embed-container">
         <iframe 
             src="https://hgnice.biz/#/register?invitationCode=255721948910" 
@@ -59,6 +17,88 @@
             allow="accelerometer; clipboard-write; encrypted-media; fullscreen"
             referrerpolicy="strict-origin">
         </iframe>
+    </div>
+
+    <!-- বাম পাশে: প্রেডিকশন প্যানেল -->
+    <div class="prediction-panel" id="predictionPanel">
+        <div class="panel-header">
+            <span class="wingo-logo">🎲 WINGO</span>
+            <span class="time-mode" id="timeModeText">30 SECOND</span>
+        </div>
+        
+        <!-- পিরিয়ড নাম্বার -->
+        <div class="period-section">
+            <label>📋 পিরিয়ড নং</label>
+            <div class="period-number" id="periodNumberDisplay">11181</div>
+        </div>
+
+        <!-- কাউন্টডাউন টাইমার -->
+        <div class="timer-section">
+            <div class="countdown-circle" id="countdownCircle">
+                <span id="countdownTimer">30</span>
+                <small>সেকেন্ড</small>
+            </div>
+        </div>
+
+        <!-- নাম্বার ডিসপ্লে -->
+        <div class="number-section">
+            <div class="prediction-number" id="predictionNumber">?</div>
+        </div>
+
+        <!-- সাইজ ও কালার -->
+        <div class="result-section">
+            <div class="size-box" id="sizeBox">
+                <span>সাইজ</span>
+                <strong id="predictionSize">---</strong>
+            </div>
+            <div class="color-box" id="colorBox">
+                <span>রং</span>
+                <strong id="predictionColor">-----</strong>
+            </div>
+        </div>
+
+        <!-- স্ট্যাটাস বার -->
+        <div class="status-bar">
+            <span>🟢 সক্রিয়</span>
+        </div>
+    </div>
+
+    <!-- ডান পাশে: সেটিং প্যানেল (ড্র্যাগেবল) -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header" id="dragHandle">
+            <span>⚙️ সেটিংস</span>
+            <div class="resize-controls">
+                <button class="resize-btn" id="makeSmall">−</button>
+                <button class="resize-btn" id="makeLarge">+</button>
+            </div>
+        </div>
+
+        <div class="settings-body">
+            <div class="setting-group">
+                <label>পিরিয়ড সেট করুন</label>
+                <input type="number" id="periodInput" value="11181" min="1">
+            </div>
+
+            <div class="setting-group">
+                <label>টাইম সিলেক্ট</label>
+                <div class="timer-select">
+                    <button class="time-option" data-time="30">30 সেকেন্ড</button>
+                    <button class="time-option" data-time="60">1 মিনিট</button>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label>অ্যাকশন</label>
+                <div class="action-buttons">
+                    <button id="saveStartBtn" class="btn-start">▶ শুরু</button>
+                    <button id="stopResetBtn" class="btn-stop">⏹ বন্ধ</button>
+                </div>
+            </div>
+
+            <div class="info-text">
+                <small>💡 প্রতি রাউন্ড শেষে নতুন সিগন্যাল দেখাবে</small>
+            </div>
+        </div>
     </div>
 </div>
 

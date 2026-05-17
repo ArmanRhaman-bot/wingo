@@ -6,7 +6,7 @@
 
 body {
     background: #0a0f1e;
-    font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
     height: 100vh;
 }
@@ -18,7 +18,7 @@ body {
     overflow: hidden;
 }
 
-/* iframe স্টাইল - পুরো ব্যাকগ্রাউন্ড কভার */
+/* iframe পুরো পেজ কভার করবে */
 .embed-container {
     position: absolute;
     top: 0;
@@ -35,22 +35,21 @@ body {
     background: #fff;
 }
 
-/* সিগন্যাল উইজেট - ড্র্যাগেবল ও রিসাইজেবল */
+/* কমপ্যাক্ট উইজেট - ছোট আকৃতি */
 .signal-widget {
     position: fixed;
-    top: 20px;
-    right: 24px;
-    width: 330px;
-    background: rgba(12, 18, 28, 0.96);
-    backdrop-filter: blur(20px);
-    border-radius: 28px;
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.6), 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+    top: 12px;
+    right: 12px;
+    width: 260px;
+    background: rgba(8, 12, 20, 0.95);
+    backdrop-filter: blur(18px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 200, 50, 0.4);
+    box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.5);
     z-index: 10000;
     cursor: grab;
-    transition: width 0.2s ease, box-shadow 0.2s;
-    color: #f0f3fa;
-    font-weight: 500;
+    transition: width 0.2s ease;
+    font-size: 13px;
 }
 
 .signal-widget:active {
@@ -59,210 +58,200 @@ body {
 
 /* ছোট মোড */
 .signal-widget.small-mode {
-    width: 270px;
+    width: 220px;
 }
-/* বড় মোড */
+/* বড় মোড (তাও ছোট রাখা) */
 .signal-widget.large-mode {
-    width: 400px;
+    width: 300px;
 }
 
 .widget-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 18px;
-    background: rgba(255, 215, 0, 0.08);
-    border-radius: 28px 28px 0 0;
-    border-bottom: 1px solid rgba(255, 200, 0, 0.25);
+    padding: 8px 12px;
+    background: rgba(255, 200, 50, 0.1);
+    border-radius: 20px 20px 0 0;
+    border-bottom: 1px solid rgba(255, 200, 50, 0.3);
     cursor: grab;
-}
-.widget-header:active {
-    cursor: grabbing;
 }
 
 .drag-handle {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
+    gap: 6px;
+    font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 0.3px;
-    background: linear-gradient(135deg, #FFD966, #FFB347);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: #ffd966;
 }
+
 .drag-handle span:first-child {
-    font-size: 1.3rem;
-    color: #FFD966;
+    font-size: 1rem;
 }
 
 .resize-controls {
     display: flex;
-    gap: 10px;
+    gap: 6px;
     background: rgba(0, 0, 0, 0.4);
-    padding: 4px 12px;
-    border-radius: 40px;
+    padding: 2px 8px;
+    border-radius: 30px;
 }
 
 .resize-btn {
     background: #2a2f3f;
     border: none;
     color: white;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     font-weight: bold;
-    width: 28px;
+    width: 24px;
     border-radius: 30px;
     cursor: pointer;
     transition: all 0.2s;
 }
+
 .resize-btn:hover {
     background: #ffb347;
-    color: #0a0f1e;
 }
 
-/* সিগন্যাল ডিসপ্লে এরিয়া */
+/* সিগন্যাল কন্টেন্ট - কমপ্যাক্ট */
 .signal-content {
-    padding: 24px 16px;
+    padding: 10px 12px;
     text-align: center;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 24px;
-    margin: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+}
+
+.signal-row {
+    margin-bottom: 6px;
 }
 
 .signal-number {
-    font-size: 4.2rem;
+    font-size: 2.2rem;
     font-weight: 800;
     background: #0e121f;
     display: inline-block;
-    width: fit-content;
-    margin: 0 auto;
-    padding: 0.2rem 1rem;
-    border-radius: 60px;
-    box-shadow: 0 0 8px rgba(255, 200, 0, 0.4);
+    padding: 2px 14px;
+    border-radius: 40px;
     font-family: monospace;
-    letter-spacing: 4px;
+    letter-spacing: 2px;
+    box-shadow: 0 0 6px rgba(255, 200, 0, 0.3);
 }
 
-.signal-size {
-    font-size: 1.6rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    background: #1e1f2c;
-    padding: 8px;
-    border-radius: 40px;
-}
-
-.signal-color {
-    font-size: 1.4rem;
+.signal-info {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    font-size: 0.75rem;
     font-weight: 600;
+}
+
+.signal-size, .signal-color {
     background: #1a1e2c;
-    padding: 8px;
-    border-radius: 40px;
-}
-
-/* এনিমেশন pop */
-.animate-pop {
-    animation: popScale 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-}
-
-@keyframes popScale {
-    0% { transform: scale(0.8); opacity: 0; }
-    80% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
+    padding: 4px 12px;
+    border-radius: 30px;
+    text-transform: uppercase;
 }
 
 /* কন্ট্রোল প্যানেল */
 .control-panel {
-    padding: 16px 18px 20px;
+    padding: 8px 12px 12px;
     background: rgba(0, 0, 0, 0.3);
-    border-radius: 28px;
-    margin: 8px 12px 18px;
+    border-radius: 16px;
+    margin: 0 8px 12px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 }
 
 .period-row {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
+    flex-wrap: wrap;
 }
+
 .period-row label {
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #aaa;
 }
+
 .period-row input {
     background: #1f2538;
     border: 1px solid #ffcf4a;
-    border-radius: 28px;
-    padding: 6px 12px;
-    width: 100px;
+    border-radius: 20px;
+    padding: 4px 8px;
+    width: 55px;
     color: white;
     font-weight: bold;
     text-align: center;
+    font-size: 0.75rem;
 }
 
-.timer-options {
+.timer-buttons {
     display: flex;
-    gap: 12px;
+    gap: 6px;
+    margin-left: auto;
 }
-.timer-btn {
-    flex: 1;
+
+.timer-btn.mini {
     background: #2e3a55;
     border: none;
-    padding: 8px;
-    border-radius: 40px;
+    padding: 4px 10px;
+    border-radius: 30px;
     color: white;
+    font-size: 0.7rem;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.2s;
 }
-.timer-btn.active {
+
+.timer-btn.mini.active {
     background: #f0a500;
     color: #0b0f1a;
-    box-shadow: 0 0 6px #ffb347;
+    box-shadow: 0 0 4px #ffb347;
 }
-.action-buttons {
+
+.action-row {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
-.action-buttons button {
+
+.action-start, .action-stop {
     flex: 1;
-    background: linear-gradient(95deg, #2f3b5c, #1f2538);
     border: none;
-    padding: 10px;
-    border-radius: 50px;
+    padding: 6px;
+    border-radius: 30px;
     font-weight: 700;
-    color: #ffde9c;
+    font-size: 0.75rem;
     cursor: pointer;
     transition: 0.15s;
 }
-.action-buttons button:first-child {
+
+.action-start {
     background: #007f5f;
     color: white;
 }
-.action-buttons button:last-child {
+
+.action-stop {
     background: #5e2e2e;
     color: #ffaeae;
 }
-.countdown-area, .period-track {
-    background: #00000033;
-    padding: 6px 12px;
-    border-radius: 36px;
-    text-align: center;
-    font-size: 0.9rem;
+
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    background: #00000040;
+    padding: 5px 10px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 500;
 }
-#timerDisplay {
-    font-size: 1.6rem;
-    font-weight: 800;
-    font-family: monospace;
-    margin: 0 6px;
-    background: #00000055;
-    padding: 0 8px;
-    border-radius: 20px;
-  }
+
+/* এনিমেশন */
+.animate-pop {
+    animation: popScale 0.3s ease-out;
+}
+
+@keyframes popScale {
+    0% { transform: scale(0.7); opacity: 0; }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}

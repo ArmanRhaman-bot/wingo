@@ -6,8 +6,8 @@
 
 body {
     background: #0a0f1e;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    overflow-x: hidden;
+    font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+    overflow: hidden;
     height: 100vh;
 }
 
@@ -15,10 +15,9 @@ body {
     position: relative;
     width: 100%;
     height: 100vh;
-    overflow: hidden;
 }
 
-/* iframe পুরো পেজ কভার করবে */
+/* iframe পুরো ব্যাকগ্রাউন্ড */
 .embed-container {
     position: absolute;
     top: 0;
@@ -32,226 +31,348 @@ body {
     width: 100%;
     height: 100%;
     border: none;
-    background: #fff;
 }
 
-/* কমপ্যাক্ট উইজেট - ছোট আকৃতি */
-.signal-widget {
+/* ========= প্রেডিকশন প্যানেল (বাম পাশে) ========= */
+.prediction-panel {
     position: fixed;
-    top: 12px;
-    right: 12px;
-    width: 260px;
-    background: rgba(8, 12, 20, 0.95);
-    backdrop-filter: blur(18px);
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 280px;
+    background: linear-gradient(135deg, #0f1222, #0a0d1a);
+    backdrop-filter: blur(20px);
+    border-radius: 28px;
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    padding: 18px 16px;
+    color: white;
+}
+
+.panel-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.wingo-logo {
+    font-size: 1.4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #FFD700, #FF8C00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: block;
+}
+
+.time-mode {
+    font-size: 0.8rem;
+    background: #ff8c0033;
+    padding: 4px 12px;
+    border-radius: 30px;
+    display: inline-block;
+    margin-top: 6px;
+    font-weight: 600;
+    color: #ffaa33;
+}
+
+.period-section {
+    text-align: center;
+    margin-bottom: 20px;
+    background: #00000040;
+    padding: 10px;
     border-radius: 20px;
-    border: 1px solid rgba(255, 200, 50, 0.4);
-    box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.5);
+}
+
+.period-section label {
+    font-size: 0.7rem;
+    color: #aaa;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.period-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: monospace;
+    color: #ffd966;
+    letter-spacing: 2px;
+}
+
+/* টাইমার সার্কেল */
+.timer-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.countdown-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e2a3a, #0f1420);
+    border: 3px solid #ffaa33;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(255, 170, 51, 0.3);
+}
+
+.countdown-circle span {
+    font-size: 2.5rem;
+    font-weight: 800;
+    font-family: monospace;
+    color: #ffaa33;
+    line-height: 1;
+}
+
+.countdown-circle small {
+    font-size: 0.7rem;
+    color: #ccc;
+}
+
+/* নাম্বার ডিসপ্লে */
+.number-section {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.prediction-number {
+    font-size: 4rem;
+    font-weight: 900;
+    background: #1a1f30;
+    display: inline-block;
+    padding: 10px 30px;
+    border-radius: 60px;
+    font-family: monospace;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    transition: all 0.3s ease;
+}
+
+/* সাইজ ও কালার রেজাল্ট */
+.result-section {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.size-box, .color-box {
+    flex: 1;
+    background: #00000040;
+    border-radius: 20px;
+    padding: 12px;
+    text-align: center;
+}
+
+.size-box span, .color-box span {
+    font-size: 0.7rem;
+    color: #aaa;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.size-box strong, .color-box strong {
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.status-bar {
+    text-align: center;
+    font-size: 0.7rem;
+    background: #00aa5533;
+    padding: 6px;
+    border-radius: 30px;
+    color: #00ff88;
+}
+
+/* ========= সেটিংস প্যানেল (ডান পাশে, ড্র্যাগেবল) ========= */
+.settings-panel {
+    position: fixed;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 260px;
+    background: rgba(10, 14, 27, 0.96);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 200, 50, 0.3);
     z-index: 10000;
     cursor: grab;
-    transition: width 0.2s ease;
-    font-size: 13px;
+    transition: width 0.2s;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
 }
 
-.signal-widget:active {
+.settings-panel:active {
     cursor: grabbing;
 }
 
-/* ছোট মোড */
-.signal-widget.small-mode {
+.settings-panel.small-mode {
     width: 220px;
 }
-/* বড় মোড (তাও ছোট রাখা) */
-.signal-widget.large-mode {
+
+.settings-panel.large-mode {
     width: 300px;
 }
 
-.widget-header {
+.settings-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px;
+    padding: 12px 16px;
     background: rgba(255, 200, 50, 0.1);
-    border-radius: 20px 20px 0 0;
+    border-radius: 24px 24px 0 0;
     border-bottom: 1px solid rgba(255, 200, 50, 0.3);
     cursor: grab;
 }
 
-.drag-handle {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.8rem;
+.settings-header span {
     font-weight: 700;
     color: #ffd966;
 }
 
-.drag-handle span:first-child {
-    font-size: 1rem;
-}
-
 .resize-controls {
     display: flex;
-    gap: 6px;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 2px 8px;
-    border-radius: 30px;
+    gap: 8px;
 }
 
 .resize-btn {
     background: #2a2f3f;
     border: none;
     color: white;
-    font-size: 0.9rem;
-    font-weight: bold;
-    width: 24px;
+    font-size: 1rem;
+    width: 26px;
     border-radius: 30px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: 0.2s;
 }
 
 .resize-btn:hover {
     background: #ffb347;
 }
 
-/* সিগন্যাল কন্টেন্ট - কমপ্যাক্ট */
-.signal-content {
-    padding: 10px 12px;
-    text-align: center;
-}
-
-.signal-row {
-    margin-bottom: 6px;
-}
-
-.signal-number {
-    font-size: 2.2rem;
-    font-weight: 800;
-    background: #0e121f;
-    display: inline-block;
-    padding: 2px 14px;
-    border-radius: 40px;
-    font-family: monospace;
-    letter-spacing: 2px;
-    box-shadow: 0 0 6px rgba(255, 200, 0, 0.3);
-}
-
-.signal-info {
+.settings-body {
+    padding: 16px;
     display: flex;
-    justify-content: center;
-    gap: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    flex-direction: column;
+    gap: 18px;
 }
 
-.signal-size, .signal-color {
-    background: #1a1e2c;
-    padding: 4px 12px;
-    border-radius: 30px;
-    text-transform: uppercase;
-}
-
-/* কন্ট্রোল প্যানেল */
-.control-panel {
-    padding: 8px 12px 12px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 16px;
-    margin: 0 8px 12px;
+.setting-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.period-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.period-row label {
-    font-size: 0.7rem;
+.setting-group label {
+    font-size: 0.75rem;
     font-weight: 600;
-    color: #aaa;
+    color: #bbb;
 }
 
-.period-row input {
+.setting-group input {
     background: #1f2538;
     border: 1px solid #ffcf4a;
-    border-radius: 20px;
-    padding: 4px 8px;
-    width: 55px;
+    border-radius: 30px;
+    padding: 8px 12px;
     color: white;
     font-weight: bold;
     text-align: center;
-    font-size: 0.75rem;
 }
 
-.timer-buttons {
+.timer-select {
     display: flex;
-    gap: 6px;
-    margin-left: auto;
+    gap: 10px;
 }
 
-.timer-btn.mini {
+.time-option {
+    flex: 1;
     background: #2e3a55;
     border: none;
-    padding: 4px 10px;
+    padding: 8px;
     border-radius: 30px;
     color: white;
-    font-size: 0.7rem;
     font-weight: 600;
     cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.75rem;
 }
 
-.timer-btn.mini.active {
+.time-option.active {
     background: #f0a500;
     color: #0b0f1a;
-    box-shadow: 0 0 4px #ffb347;
+    box-shadow: 0 0 8px #ffb347;
 }
 
-.action-row {
+.action-buttons {
     display: flex;
-    gap: 8px;
+    gap: 10px;
 }
 
-.action-start, .action-stop {
+.btn-start, .btn-stop {
     flex: 1;
     border: none;
-    padding: 6px;
+    padding: 10px;
     border-radius: 30px;
     font-weight: 700;
-    font-size: 0.75rem;
     cursor: pointer;
     transition: 0.15s;
 }
 
-.action-start {
+.btn-start {
     background: #007f5f;
     color: white;
 }
 
-.action-stop {
+.btn-stop {
     background: #5e2e2e;
     color: #ffaeae;
 }
 
-.status-row {
-    display: flex;
-    justify-content: space-between;
-    background: #00000040;
-    padding: 5px 10px;
-    border-radius: 30px;
-    font-size: 0.7rem;
-    font-weight: 500;
+.info-text {
+    text-align: center;
+    color: #888;
+    font-size: 0.65rem;
 }
 
 /* এনিমেশন */
-.animate-pop {
-    animation: popScale 0.3s ease-out;
-}
-
 @keyframes popScale {
     0% { transform: scale(0.7); opacity: 0; }
     80% { transform: scale(1.1); }
     100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-pop {
+    animation: popScale 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+
+/* কালার হাইলাইট ক্লাস */
+.color-green {
+    color: #00ff88 !important;
+    text-shadow: 0 0 8px #00ff88;
+}
+
+.color-red {
+    color: #ff4444 !important;
+    text-shadow: 0 0 8px #ff4444;
+}
+
+.color-violet {
+    color: #cc66ff !important;
+    text-shadow: 0 0 8px #cc66ff;
+}
+
+.bg-green {
+    background: #00aa5533 !important;
+    border-left: 3px solid #00ff88;
+}
+
+.bg-red {
+    background: #ff333322 !important;
+    border-left: 3px solid #ff4444;
+}
+
+.bg-violet {
+    background: #aa66ff33 !important;
+    border-left: 3px solid #cc66ff;
 }

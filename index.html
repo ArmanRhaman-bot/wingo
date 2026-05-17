@@ -1,96 +1,131 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>WINGO প্রেডিকশন | ট্রেডিং টুল</title>
+    <title>WINGO Prediction | Trading Tool</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="app-container">
-    <!-- এম্বেড করা লাইভ পেজ (hgnice.biz) -->
-    <div class="iframe-wrapper">
-        <iframe src="https://hgnice.biz/#/register?invitationCode=255721948910" 
-                title="WINGO ট্রেডিং প্ল্যাটফর্ম"
-                allow="accelerometer; clipboard-write; encrypted-media; fullscreen"
-                referrerpolicy="strict-origin">
-        </iframe>
-    </div>
 
-    <!-- প্রেডিকশন উইজেট (মোবাইলের ১/৪ অংশ) -->
-    <div class="prediction-widget" id="predictionWidget">
-        <!-- হেডার: টাইটেল + সেটিংস আইকন -->
-        <div class="widget-header">
-            <div class="title">
-                <span class="wingo-badge">🎲 WINGO</span>
-                <span class="time-mode" id="timeModeLabel">30 SECOND</span>
+    <!-- Site Selector Screen (shown on first load) -->
+    <div class="site-selector" id="siteSelectorScreen">
+        <div class="selector-box">
+            <div class="selector-logo">🎲 WINGO Tool</div>
+            <p class="selector-subtitle">Select your platform to continue</p>
+            <div class="selector-buttons">
+                <button class="site-btn hgnice-btn" id="hgniceBtn">
+                    <span class="site-icon">🟠</span>
+                    <span class="site-name">HGNICE</span>
+                    <span class="site-desc">hgnice.biz</span>
+                </button>
+                <button class="site-btn dkwin-btn" id="dkwinBtn">
+                    <span class="site-icon">🔵</span>
+                    <span class="site-name">DKWIN</span>
+                    <span class="site-desc">dkwin9.com</span>
+                </button>
             </div>
-            <button class="settings-icon" id="settingsIcon">⚙️</button>
-        </div>
-
-        <!-- পিরিয়ড নাম্বার -->
-        <div class="period-row">
-            <label>পিরিয়ড নং</label>
-            <div class="period-value" id="periodDisplay">11181</div>
-        </div>
-
-        <!-- কাউন্টডাউন টাইমার (সার্কেল) -->
-        <div class="timer-circle" id="timerCircle">
-            <span id="timerSeconds">30</span>
-            <small>সেকেন্ড</small>
-        </div>
-
-        <!-- এলোমেলো নাম্বার -->
-        <div class="number-box" id="numberBox">
-            <span id="predictionNumber">?</span>
-        </div>
-
-        <!-- সাইজ ও কালার ফলাফল -->
-        <div class="result-row">
-            <div class="size-card" id="sizeCard">
-                <span>সাইজ</span>
-                <strong id="sizeValue">---</strong>
-            </div>
-            <div class="color-card" id="colorCard">
-                <span>রং</span>
-                <strong id="colorValue">-----</strong>
-            </div>
-        </div>
-
-        <!-- স্ট্যাটাস বার (active/inactive) -->
-        <div class="status-bar" id="statusBar">
-            <span>⚫ বন্ধ</span>
         </div>
     </div>
 
-    <!-- সেটিংস মোডাল (পপআপ) -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>⚙️ সেটিংস</h3>
-                <button class="close-modal" id="closeModalBtn">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="input-group">
-                    <label>পিরিয়ড নাম্বার</label>
-                    <input type="number" id="periodInput" value="11181" min="1">
+    <!-- Main App (hidden until site selected) -->
+    <div class="main-app" id="mainApp" style="display:none;">
+
+        <!-- Embedded Live Page -->
+        <div class="iframe-wrapper">
+            <iframe id="mainIframe"
+                    src=""
+                    title="Trading Platform"
+                    allow="accelerometer; clipboard-write; encrypted-media; fullscreen"
+                    referrerpolicy="strict-origin">
+            </iframe>
+        </div>
+
+        <!-- Prediction Widget (draggable, square style) -->
+        <div class="prediction-widget" id="predictionWidget">
+
+            <!-- Drag Handle -->
+            <div class="drag-handle" id="dragHandle">⠿</div>
+
+            <!-- Header -->
+            <div class="widget-header">
+                <div class="title">
+                    <span class="wingo-badge">🎲 WINGO</span>
+                    <span class="time-mode" id="timeModeLabel">30 SEC</span>
                 </div>
-                <div class="input-group">
-                    <label>টাইম সিলেক্ট</label>
-                    <div class="time-buttons">
-                        <button class="time-option" data-time="30">30 সেকেন্ড</button>
-                        <button class="time-option" data-time="60">1 মিনিট</button>
+                <div class="header-icons">
+                    <button class="home-icon" id="homeIcon" title="Change Platform">🏠</button>
+                    <button class="settings-icon" id="settingsIcon" title="Settings">⚙️</button>
+                </div>
+            </div>
+
+            <!-- Period Number -->
+            <div class="period-row">
+                <label>PERIOD NO</label>
+                <div class="period-value" id="periodDisplay">11181</div>
+            </div>
+
+            <!-- Countdown Timer (circle) -->
+            <div class="timer-circle" id="timerCircle">
+                <span id="timerSeconds">30</span>
+                <small>SEC</small>
+            </div>
+
+            <!-- Prediction Number -->
+            <div class="number-box" id="numberBox">
+                <span id="predictionNumber">?</span>
+            </div>
+
+            <!-- Size & Color Result -->
+            <div class="result-row">
+                <div class="size-card" id="sizeCard">
+                    <span>SIZE</span>
+                    <strong id="sizeValue">---</strong>
+                </div>
+                <div class="color-card" id="colorCard">
+                    <span>COLOR</span>
+                    <strong id="colorValue">---</strong>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar" id="statusBar">
+                <span>⚫ STOPPED</span>
+            </div>
+
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>⚙️ Settings</h3>
+                    <button class="close-modal" id="closeModalBtn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <label>Period Number</label>
+                        <input type="number" id="periodInput" value="11181" min="1">
                     </div>
+                    <div class="input-group">
+                        <label>Select Time</label>
+                        <div class="time-buttons">
+                            <button class="time-option" data-time="30">30 Seconds</button>
+                            <button class="time-option" data-time="60">1 Minute</button>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="modalStartBtn" class="btn-start">▶ Start</button>
+                        <button id="modalStopBtn" class="btn-stop">⏹ Stop</button>
+                    </div>
+                    <p class="modal-hint">💡 New signal will appear after each round</p>
                 </div>
-                <div class="action-buttons">
-                    <button id="modalStartBtn" class="btn-start">▶ শুরু</button>
-                    <button id="modalStopBtn" class="btn-stop">⏹ বন্ধ</button>
-                </div>
-                <p class="modal-hint">💡 প্রতি রাউন্ড শেষে নতুন সিগন্যাল আসবে</p>
             </div>
         </div>
-    </div>
+
+    </div><!-- end main-app -->
 </div>
 
 <script src="script.js"></script>

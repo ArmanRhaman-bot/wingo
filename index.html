@@ -3,70 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WINGO সিগন্যাল ভিউয়ার | ট্রেডিং টুলস</title>
+    <title>WINGO সিগন্যাল টুলস</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="app-wrapper">
-    <!-- ড্র্যাগ ও রিসাইজযোগ্য সিগন্যাল উইজেট -->
-    <div class="signal-widget" id="signalWidget">
+    <!-- ছোট সিগন্যাল উইজেট -->
+    <div class="signal-widget compact" id="signalWidget">
         <div class="widget-header" id="dragHandle">
             <div class="drag-handle">
-                <span>⚡</span> 
-                <span>WINGO SIGNAL</span>
+                <span>🎲</span> 
+                <span>WINGO</span>
             </div>
             <div class="resize-controls">
-                <button class="resize-btn" id="makeSmall" title="ছোট করুন">−</button>
-                <button class="resize-btn" id="makeLarge" title="বড় করুন">+</button>
+                <button class="resize-btn" id="makeSmall" title="ছোট">−</button>
+                <button class="resize-btn" id="makeLarge" title="বড়">+</button>
             </div>
         </div>
 
-        <div class="signal-content" id="signalContent">
-            <!-- এনিমেশন ও এলিমেন্ট গুলো এখানে ডায়নামিক -->
-            <div class="signal-number animate-pop" id="signalNumber">--</div>
-            <div class="signal-size" id="signalSize">---</div>
-            <div class="signal-color" id="signalColor">-----</div>
+        <div class="signal-content">
+            <div class="signal-row">
+                <div class="signal-number" id="signalNumber">--</div>
+            </div>
+            <div class="signal-info">
+                <span class="signal-size" id="signalSize">---</span>
+                <span class="signal-color" id="signalColor">-----</span>
+            </div>
         </div>
 
-        <!-- কন্ট্রোল প্যানেল: পারিয়ড নাম্বার ও টাইম সেট -->
         <div class="control-panel">
             <div class="period-row">
-                <label>পিরিয়ড নাম্বার:</label>
-                <input type="number" id="periodNumber" value="1" min="1" step="1">
+                <label>Period:</label>
+                <input type="number" id="periodNumber" value="1" min="1">
+                <div class="timer-buttons">
+                    <button class="timer-btn mini" data-time="30">30s</button>
+                    <button class="timer-btn mini" data-time="60">1m</button>
+                </div>
             </div>
-            <div class="timer-options">
-                <button class="timer-btn" data-time="30">30 সেকেন্ড</button>
-                <button class="timer-btn" data-time="60">1 মিনিট</button>
+            <div class="action-row">
+                <button id="saveStartBtn" class="action-start">▶ শুরু</button>
+                <button id="stopResetBtn" class="action-stop">⏹ বন্ধ</button>
             </div>
-            <div class="action-buttons">
-                <button id="saveStartBtn">▶ সংরক্ষণ ও শুরু</button>
-                <button id="stopResetBtn">⏹ স্টপ / রিসেট</button>
-            </div>
-            <div class="countdown-area">
-                <span>কাউন্টডাউন: </span>
-                <span id="timerDisplay">0</span>
-                <span id="timerUnit">সেকেন্ড</span>
-            </div>
-            <div class="period-track">
-                <span>বর্তমান পিরিয়ড: </span>
-                <strong id="currentPeriodLabel">1</strong>
+            <div class="status-row">
+                <span>⏱️ <span id="timerDisplay">0</span>s</span>
+                <span>📊 Period: <strong id="currentPeriodLabel">1</strong></span>
             </div>
         </div>
     </div>
 
-    <!-- এম্বেড করা ওয়েবপেজ (hgnice.biz) -->
     <div class="embed-container">
         <iframe 
             src="https://hgnice.biz/#/register?invitationCode=255721948910" 
             title="WINGO ট্রেডিং প্ল্যাটফর্ম"
             allow="accelerometer; clipboard-write; encrypted-media; fullscreen"
-            referrerpolicy="strict-origin"
-            loading="eager">
+            referrerpolicy="strict-origin">
         </iframe>
     </div>
 </div>
 
 <script src="script.js"></script>
 </body>
-  </html>
+</html>

@@ -1,131 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>WINGO Prediction | Trading Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>WINGO PREDICTOR · 30s স্কোয়ার উইজেট</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="app-container">
+    <!-- হেডার: টাইমার + ফুলস্ক্রিন -->
+    <div class="header-row">
+        <div class="brand">
+            <h1>⚡ WINGO PREDICTOR</h1>
+            <p>৩০ সেকেন্ড · স্কোয়ার উইজেট · ফুলস্ক্রিন রেডি</p>
+        </div>
+        <div class="timer-panel">
+            <div class="timer-label">পরবর্তী ফলাফল</div>
+            <div class="countdown" id="countdownDisplay">৩০</div>
+        </div>
+        <div class="period-badge">
+            পিরিয়ড <span id="periodValue">১১১৮১</span>
+        </div>
+        <button class="fullscreen-btn" id="fullscreenToggleBtn">
+            ⛶ ফুলস্ক্রিন
+        </button>
+    </div>
 
-    <!-- Site Selector Screen (shown on first load) -->
-    <div class="site-selector" id="siteSelectorScreen">
-        <div class="selector-box">
-            <div class="selector-logo">🎲 WINGO Tool</div>
-            <p class="selector-subtitle">Select your platform to continue</p>
-            <div class="selector-buttons">
-                <button class="site-btn hgnice-btn" id="hgniceBtn">
-                    <span class="site-icon">🟠</span>
-                    <span class="site-name">HGNICE</span>
-                    <span class="site-desc">hgnice.biz</span>
-                </button>
-                <button class="site-btn dkwin-btn" id="dkwinBtn">
-                    <span class="site-icon">🔵</span>
-                    <span class="site-name">DKWIN</span>
-                    <span class="site-desc">dkwin9.com</span>
-                </button>
-            </div>
+    <!-- প্রধান প্রেডিকশন স্কোয়ার উইজেট -->
+    <div class="prediction-hero">
+        <div class="square-prediction" id="predictionSquare">
+            <div class="result-label">প্রেডিকশন</div>
+            <div class="result-value" id="predictionResult">---</div>
+            <div class="jackpot-tag">🎰 জ্যাকপট রেডি</div>
         </div>
     </div>
 
-    <!-- Main App (hidden until site selected) -->
-    <div class="main-app" id="mainApp" style="display:none;">
+    <!-- ক্যাটাগরি -->
+    <div class="categories">
+        <div class="cat-item active">সব</div>
+        <div class="cat-item">স্লটস</div>
+        <div class="cat-item">লটারি</div>
+        <div class="cat-item">স্পোর্টস</div>
+        <div class="cat-item">ক্যাসিনো</div>
+        <div class="cat-item">পিভিসি</div>
+    </div>
 
-        <!-- Embedded Live Page -->
-        <div class="iframe-wrapper">
-            <iframe id="mainIframe"
-                    src=""
-                    title="Trading Platform"
-                    allow="accelerometer; clipboard-write; encrypted-media; fullscreen"
-                    referrerpolicy="strict-origin">
-            </iframe>
+    <!-- সুপার জ্যাকপট + বেট উইজেট (স্কোয়ার) -->
+    <div class="section-title">
+        <span>🔥 সুপার জ্যাকপট · এক্সট্রা রিওয়ার্ড</span>
+        <small>সর্বোচ্চ বেট ₱৩,০০০.০০</small>
+    </div>
+    <div class="jackpot-grid" id="jackpotGrid">
+        <!-- জাভাস্ক্রিপ্ট থেকে ডাইনামিকভাবে লোড হবে -->
+    </div>
+
+    <!-- স্লট মেশিন (স্কোয়ার) -->
+    <div class="section-title">
+        <span>🎰 স্লট মেশিন · স্কোয়ার পিকস</span>
+    </div>
+    <div class="slots-grid" id="slotsGrid">
+        <!-- জাভাস্ক্রিপ্ট থেকে ডাইনামিকভাবে লোড হবে -->
+    </div>
+
+    <!-- লুক সুপার জ্যাকপট বাটন -->
+    <div style="text-align: center;">
+        <button class="look-jackpot-btn" id="lookJackpotBtn">
+            ✨ সুপার জ্যাকপট দেখুন ✨
+        </button>
+    </div>
+
+    <!-- লাইভ বেট স্কোয়ার উইজেট -->
+    <div class="section-title">
+        <span>💎 লাইভ বেটস · স্কোয়ার উইজেট</span>
+    </div>
+    <div class="live-bets-grid" id="liveBetsGrid">
+        <!-- জাভাস্ক্রিপ্ট থেকে ডাইনামিকভাবে লোড হবে -->
+    </div>
+
+    <!-- হিস্ট্রি প্যানেল -->
+    <div class="history-panel">
+        <div class="history-title">📜 গত ৬টি প্রেডিকশন (৩০ সেকেন্ড চক্র)</div>
+        <div class="history-bubbles" id="historyContainer">
+            <div class="history-chip chip-green">জয় · সবুজ</div>
+            <div class="history-chip chip-violet">জয় · বেগুনি</div>
+            <div class="history-chip chip-red">জয় · লাল</div>
         </div>
+        <div class="history-note">✅ স্কোয়ার উইজেট | প্রতি ৩০ সেকেন্ডে অটো প্রেডিকশন</div>
+    </div>
 
-        <!-- Prediction Widget (draggable, square style) -->
-        <div class="prediction-widget" id="predictionWidget">
-
-            <!-- Drag Handle -->
-            <div class="drag-handle" id="dragHandle">⠿</div>
-
-            <!-- Header -->
-            <div class="widget-header">
-                <div class="title">
-                    <span class="wingo-badge">🎲 WINGO</span>
-                    <span class="time-mode" id="timeModeLabel">30 SEC</span>
-                </div>
-                <div class="header-icons">
-                    <button class="home-icon" id="homeIcon" title="Change Platform">🏠</button>
-                    <button class="settings-icon" id="settingsIcon" title="Settings">⚙️</button>
-                </div>
-            </div>
-
-            <!-- Period Number -->
-            <div class="period-row">
-                <label>PERIOD NO</label>
-                <div class="period-value" id="periodDisplay">11181</div>
-            </div>
-
-            <!-- Countdown Timer (circle) -->
-            <div class="timer-circle" id="timerCircle">
-                <span id="timerSeconds">30</span>
-                <small>SEC</small>
-            </div>
-
-            <!-- Prediction Number -->
-            <div class="number-box" id="numberBox">
-                <span id="predictionNumber">?</span>
-            </div>
-
-            <!-- Size & Color Result -->
-            <div class="result-row">
-                <div class="size-card" id="sizeCard">
-                    <span>SIZE</span>
-                    <strong id="sizeValue">---</strong>
-                </div>
-                <div class="color-card" id="colorCard">
-                    <span>COLOR</span>
-                    <strong id="colorValue">---</strong>
-                </div>
-            </div>
-
-            <!-- Status Bar -->
-            <div class="status-bar" id="statusBar">
-                <span>⚫ STOPPED</span>
-            </div>
-
-        </div>
-
-        <!-- Settings Modal -->
-        <div class="modal-overlay" id="modalOverlay">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>⚙️ Settings</h3>
-                    <button class="close-modal" id="closeModalBtn">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="input-group">
-                        <label>Period Number</label>
-                        <input type="number" id="periodInput" value="11181" min="1">
-                    </div>
-                    <div class="input-group">
-                        <label>Select Time</label>
-                        <div class="time-buttons">
-                            <button class="time-option" data-time="30">30 Seconds</button>
-                            <button class="time-option" data-time="60">1 Minute</button>
-                        </div>
-                    </div>
-                    <div class="action-buttons">
-                        <button id="modalStartBtn" class="btn-start">▶ Start</button>
-                        <button id="modalStopBtn" class="btn-stop">⏹ Stop</button>
-                    </div>
-                    <p class="modal-hint">💡 New signal will appear after each round</p>
-                </div>
-            </div>
-        </div>
-
-    </div><!-- end main-app -->
+    <footer>
+        <div class="footer-brand">WINGO PREDICTOR v৩.০</div>
+        <div class="footer-copy">স্কোয়ার উইজেট · ফুলস্ক্রিন রেডি</div>
+    </footer>
 </div>
 
 <script src="script.js"></script>

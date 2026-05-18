@@ -2,545 +2,399 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    user-select: none;
 }
 
 body {
-    background: #0a0f1e;
-    font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
-    overflow: hidden;
-    height: 100vh;
-    width: 100vw;
+    background: radial-gradient(circle at 20% 30%, #0a0f1f, #03060c);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #edf4ff;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+}
+
+/* scanline ইফেক্ট */
+body::before {
+    content: "";
     position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,255,200,0.02) 0px, rgba(0,255,200,0.02) 2px, transparent 2px, transparent 6px);
+    pointer-events: none;
+    z-index: 2;
 }
 
 .app-container {
+    max-width: 1300px;
+    margin: 0 auto;
     position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+    z-index: 5;
 }
 
-/* ========= SITE SELECTOR SCREEN ========= */
-.site-selector {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: linear-gradient(145deg, #0a0f1e, #111827);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
-
-.selector-box {
-    background: rgba(15, 20, 40, 0.95);
-    border: 1px solid rgba(255, 200, 50, 0.4);
-    border-radius: 28px;
-    padding: 36px 28px;
-    width: 88%;
-    max-width: 360px;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-    animation: fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.selector-logo {
-    font-size: 1.8rem;
-    font-weight: 900;
-    background: linear-gradient(135deg, #FFD966, #FF8C00);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-}
-
-.selector-subtitle {
-    color: #888;
-    font-size: 0.8rem;
-    margin-bottom: 30px;
-}
-
-.selector-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.site-btn {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 20px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: left;
-    width: 100%;
-}
-
-.site-btn:active {
-    transform: scale(0.97);
-}
-
-.hgnice-btn {
-    background: linear-gradient(135deg, #ff6b00, #ff9a00);
-    color: white;
-}
-
-.dkwin-btn {
-    background: linear-gradient(135deg, #1a5fe0, #3b8bff);
-    color: white;
-}
-
-.site-icon {
-    font-size: 1.6rem;
-}
-
-.site-name {
-    font-size: 1.2rem;
-    font-weight: 800;
-    display: block;
-    line-height: 1.2;
-}
-
-.site-desc {
-    font-size: 0.65rem;
-    opacity: 0.8;
-    display: block;
-    margin-top: 2px;
-}
-
-/* ========= MAIN APP ========= */
-.main-app {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.iframe-wrapper {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 1;
-}
-
-.iframe-wrapper iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: white;
-}
-
-/* ========= PREDICTION WIDGET (Square, Draggable) ========= */
-.prediction-widget {
-    position: fixed;
-    bottom: 20px;
-    right: 12px;
-    width: 175px;
-    height: auto;
-    background: rgba(8, 12, 25, 0.96);
-    backdrop-filter: blur(20px);
-    border-radius: 16px;           /* square-ish corners */
-    border: 1px solid rgba(255, 200, 50, 0.5);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    z-index: 100;
-    padding: 10px 10px 8px;
-    touch-action: none;            /* drag এর জন্য জরুরি */
-    cursor: grab;
-}
-
-.prediction-widget:active {
-    cursor: grabbing;
-}
-
-/* Drag Handle (top bar) */
-.drag-handle {
-    text-align: center;
-    color: #555;
-    font-size: 1rem;
-    line-height: 1;
-    margin-bottom: 6px;
-    letter-spacing: 3px;
-    cursor: grab;
-}
-
-/* Header */
-.widget-header {
+/* হেডার */
+.header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid rgba(255, 200, 50, 0.25);
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 28px;
+    background: rgba(8, 18, 28, 0.65);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 255, 200, 0.25);
+    border-radius: 28px;
+    padding: 12px 24px;
 }
 
-.title {
+.brand h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff, #2effe0, #00c3ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.5px;
+}
+
+.brand p {
+    font-size: 0.7rem;
+    color: #77ddff;
+    letter-spacing: 1px;
+}
+
+.timer-panel {
+    background: #04131fcc;
+    border-radius: 60px;
+    padding: 8px 20px;
+    border: 1px solid #2effcf40;
+    text-align: center;
+    min-width: 160px;
+}
+
+.timer-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #7fcdff;
+}
+
+.countdown {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1;
+    color: #f0ffb0;
+    text-shadow: 0 0 8px #00ffc3;
+}
+
+.period-badge {
+    background: #0b1a2a;
+    border-radius: 40px;
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-left: 3px solid #2effcf;
+}
+
+.fullscreen-btn {
+    background: rgba(0, 255, 200, 0.08);
+    border: 1px solid #2effcf60;
+    border-radius: 40px;
+    padding: 8px 18px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #bbf0ff;
+}
+
+.fullscreen-btn:hover {
+    background: #2effcf20;
+    border-color: #2effcf;
+    transform: scale(0.98);
+}
+
+/* প্রধান প্রেডিকশন স্কোয়ার */
+.prediction-hero {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.square-prediction {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    max-width: 280px;
+    background: linear-gradient(145deg, #071824, #010b14);
+    border-radius: 32px;
+    border: 2px solid rgba(46, 255, 207, 0.5);
+    box-shadow: 0 0 30px rgba(0,255,200,0.2);
     display: flex;
     flex-direction: column;
-    line-height: 1.3;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
 }
 
-.wingo-badge {
+.result-label {
+    font-size: 1.2rem;
+    letter-spacing: 4px;
+    font-weight: 500;
+    color: #b3ecff;
+}
+
+.result-value {
+    font-size: 3rem;
     font-weight: 800;
-    font-size: 0.72rem;
-    background: linear-gradient(135deg, #FFD966, #FF8C00);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #fff, #5effe0);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
 }
 
-.time-mode {
-    font-size: 0.55rem;
-    background: #ff8c0033;
-    padding: 2px 7px;
-    border-radius: 6px;
-    display: inline-block;
-    width: fit-content;
-    font-weight: 600;
-    color: #ffaa55;
-    margin-top: 2px;
+.jackpot-tag {
+    font-size: 0.7rem;
+    margin-top: 12px;
+    color: #ffcc66;
 }
 
-.header-icons {
+.win-animation {
+    animation: pulseWin 0.4s ease;
+}
+
+@keyframes pulseWin {
+    0% { text-shadow: 0 0 0px #2effcf; transform: scale(1);}
+    50% { text-shadow: 0 0 25px #2effcf; transform: scale(1.05);}
+}
+
+/* ক্যাটাগরি */
+.categories {
     display: flex;
-    gap: 4px;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 36px;
+    justify-content: center;
 }
 
-.home-icon, .settings-icon {
-    background: rgba(255,255,255,0.08);
-    border: none;
-    font-size: 0.9rem;
+.cat-item {
+    background: rgba(10, 25, 40, 0.8);
+    border: 1px solid #2effcf40;
+    border-radius: 60px;
+    padding: 8px 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    backdrop-filter: blur(4px);
+    transition: 0.2s;
     cursor: pointer;
-    padding: 4px;
-    border-radius: 6px;
-    width: 26px;
-    height: 26px;
+}
+
+.cat-item.active {
+    background: #2effcf20;
+    border-color: #2effcf;
+    color: white;
+    box-shadow: 0 0 12px #2effcf40;
+}
+
+/* সেকশন টাইটেল */
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 28px 0 14px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-left: 4px solid #2effcf;
+    padding-left: 14px;
+}
+
+.section-title small {
+    font-size: 0.7rem;
+    color: #ffaa66;
+    font-weight: normal;
+}
+
+/* জ্যাকপট গ্রিড - স্কোয়ার উইজেট */
+.jackpot-grid, .slots-grid, .live-bets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.square-card {
+    background: linear-gradient(145deg, #0b1624, #040b12);
+    border-radius: 24px;
+    border: 1px solid rgba(0, 255, 200, 0.25);
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: 0.25s;
+    padding: 12px;
+    backdrop-filter: blur(2px);
+}
+
+.square-card:hover {
+    border-color: #2effcf;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+}
+
+.prize-mult {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #f5c542;
+    font-family: monospace;
+}
+
+.game-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 10px;
+    color: #bbddff;
+}
+
+.bet-amount {
+    font-size: 0.75rem;
+    background: #00000055;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-top: 8px;
+}
+
+/* স্লট কার্ড */
+.slot-card {
+    background: #0d1a28;
+    border-radius: 24px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #2effcf30;
+    transition: all 0.2s;
+}
+
+.slot-icon {
+    font-size: 2.4rem;
+    font-weight: 800;
+    background: rgba(0,0,0,0.5);
+    width: 64px;
+    height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ffd966;
-    transition: 0.2s;
-}
-
-.home-icon:active, .settings-icon:active {
-    background: rgba(255,200,50,0.3);
-    transform: scale(0.93);
-}
-
-/* Period Row */
-.period-row {
-    text-align: center;
+    border-radius: 30px;
     margin-bottom: 10px;
-    background: #00000040;
-    padding: 5px 4px;
-    border-radius: 8px;
 }
 
-.period-row label {
-    font-size: 0.5rem;
-    color: #888;
-    display: block;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.period-value {
+.slot-title {
+    font-weight: 700;
     font-size: 1rem;
-    font-weight: 800;
+}
+
+.slot-price {
+    font-size: 0.8rem;
+    color: #aaffdd;
     font-family: monospace;
-    color: #ffd966;
+    margin-top: 6px;
+}
+
+/* জ্যাকপট বাটন */
+.look-jackpot-btn {
+    background: linear-gradient(95deg, #ff8c2e, #ff4d6d);
+    border: none;
+    border-radius: 60px;
+    padding: 12px 28px;
+    font-weight: 700;
+    color: white;
+    margin: 20px auto 10px;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 20px #ff4d6d40;
+}
+
+.look-jackpot-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 28px #ff4d6d80;
+}
+
+/* হিস্ট্রি প্যানেল */
+.history-panel {
+    background: rgba(3, 12, 22, 0.7);
+    border-radius: 28px;
+    padding: 16px;
+    margin-top: 36px;
+    border: 1px solid #2effcf20;
+}
+
+.history-title {
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    color: #7effe0;
+    margin-bottom: 10px;
+}
+
+.history-bubbles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.history-chip {
+    background: #04121f;
+    padding: 6px 14px;
+    border-radius: 40px;
+    font-family: monospace;
+    font-weight: 600;
+    border-left: 3px solid currentColor;
+}
+
+.history-note {
+    font-size: 0.7rem;
+    margin-top: 12px;
+    color: #67c8ff;
+}
+
+.chip-red { border-left-color: #ff4760; color: #ff768a; }
+.chip-green { border-left-color: #2effcf; color: #84ffdd; }
+.chip-violet { border-left-color: #b273ff; color: #d6b0ff; }
+
+/* ফুটার */
+footer {
+    margin-top: 48px;
+    text-align: center;
+    font-size: 0.7rem;
+    color: #4f6d8f;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid #2effcf20;
+}
+
+.footer-brand {
+    font-weight: 700;
     letter-spacing: 2px;
 }
 
-/* Timer Circle */
-.timer-circle {
-    width: 68px;
-    height: 68px;
-    margin: 6px auto;
-    background: linear-gradient(135deg, #1e2a3a, #0f1420);
-    border-radius: 50%;
-    border: 2px solid #ffaa33;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 14px rgba(255,170,51,0.25);
-}
-
-.timer-circle span {
-    font-size: 1.5rem;
-    font-weight: 800;
-    font-family: monospace;
-    color: #ffaa33;
-    line-height: 1;
-}
-
-.timer-circle small {
-    font-size: 0.45rem;
-    color: #aaa;
-    letter-spacing: 1px;
-}
-
-/* Number Box */
-.number-box {
-    text-align: center;
-    margin: 8px 0;
-}
-
-.number-box span {
-    font-size: 2.2rem;
-    font-weight: 900;
-    background: #1a1f30;
-    display: inline-block;
-    padding: 3px 20px;
-    border-radius: 10px;
-    font-family: monospace;
-    box-shadow: 0 2px 8px black;
-    transition: all 0.2s;
-    min-width: 70px;
-    text-align: center;
-}
-
-/* Result Cards */
-.result-row {
-    display: flex;
-    gap: 6px;
-    margin: 8px 0;
-}
-
-.size-card, .color-card {
-    flex: 1;
-    background: #00000050;
-    border-radius: 8px;
-    padding: 6px 4px;
-    text-align: center;
-}
-
-.size-card span, .color-card span {
-    font-size: 0.48rem;
-    color: #888;
-    display: block;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.size-card strong, .color-card strong {
-    font-size: 0.7rem;
-    font-weight: 800;
-    display: block;
-    margin-top: 3px;
-    letter-spacing: 0.5px;
-}
-
-/* Status Bar */
-.status-bar {
-    text-align: center;
-    font-size: 0.55rem;
-    background: #33333355;
-    padding: 4px;
-    border-radius: 6px;
-    margin-top: 5px;
-    color: #ccc;
-    letter-spacing: 0.5px;
-}
-
-/* ========= MODAL ========= */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.82);
-    backdrop-filter: blur(5px);
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-overlay.show {
-    display: flex;
-}
-
-.modal-content {
-    background: #0f1322;
-    width: 85%;
-    max-width: 320px;
-    border-radius: 24px;
-    border: 1px solid #ffcf4a;
-    overflow: hidden;
-    animation: slideUp 0.25s ease;
-}
-
-@keyframes slideUp {
-    from { transform: translateY(40px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 18px;
-    background: #1a1f30;
-    border-bottom: 1px solid #ffcf4a33;
-}
-
-.modal-header h3 {
-    color: #ffd966;
-    font-size: 1rem;
-}
-
-.close-modal {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: white;
-    cursor: pointer;
-    line-height: 1;
-}
-
-.modal-body {
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.input-group label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: #bbb;
-    letter-spacing: 0.5px;
-}
-
-.input-group input {
-    background: #1f2538;
-    border: 1px solid #ffcf4a;
-    border-radius: 10px;
-    padding: 10px;
-    color: white;
-    text-align: center;
-    font-size: 0.9rem;
-}
-
-.time-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.time-option {
-    flex: 1;
-    background: #2e3a55;
-    border: none;
-    padding: 9px;
-    border-radius: 10px;
-    color: white;
-    font-weight: 600;
-    font-size: 0.68rem;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.time-option.active {
-    background: #f0a500;
-    color: #0b0f1a;
-    box-shadow: 0 0 8px #ffb347;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.btn-start, .btn-stop {
-    flex: 1;
-    border: none;
-    padding: 11px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn-start {
-    background: #007f5f;
-    color: white;
-}
-
-.btn-stop {
-    background: #5e2e2e;
-    color: #ffaeae;
-}
-
-.btn-start:active { background: #005f47; }
-.btn-stop:active  { background: #3e1e1e; }
-
-.modal-hint {
-    font-size: 0.58rem;
-    text-align: center;
-    color: #777;
-}
-
-/* ========= COLOR HIGHLIGHT ========= */
-.color-green-text {
-    color: #00ff88 !important;
-    text-shadow: 0 0 8px #00ff88;
-}
-.color-red-text {
-    color: #ff4444 !important;
-    text-shadow: 0 0 8px #ff4444;
-}
-.color-violet-text {
-    color: #cc66ff !important;
-    text-shadow: 0 0 8px #cc66ff;
-}
-.bg-green-light {
-    background: #00aa5533 !important;
-    border-left: 2px solid #00ff88;
-}
-.bg-red-light {
-    background: #ff333322 !important;
-    border-left: 2px solid #ff4444;
-}
-.bg-violet-light {
-    background: #aa66ff33 !important;
-    border-left: 2px solid #cc66ff;
-}
-
-/* Animation */
-@keyframes pop {
-    0%   { transform: scale(0.75); opacity: 0; }
-    80%  { transform: scale(1.08); }
-    100% { transform: scale(1);    opacity: 1; }
-}
-.animate-pop {
-    animation: pop 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-}
-
-/* Responsive */
-@media (max-width: 400px) {
-    .prediction-widget {
-        width: 160px;
-        right: 8px;
-        bottom: 10px;
-    }
-    .timer-circle { width: 58px; height: 58px; }
-    .timer-circle span { font-size: 1.3rem; }
-    .number-box span { font-size: 1.9rem; }
+/* মোবাইল রেসপন্সিভ */
+@media (max-width: 580px) {
+    .header-row { flex-direction: column; align-items: stretch; }
+    .square-card, .slot-card { min-width: 120px; }
+    .jackpot-grid, .slots-grid, .live-bets-grid { grid-template-columns: repeat(2, 1fr); }
+    .section-title { flex-direction: column; align-items: flex-start; }
 }

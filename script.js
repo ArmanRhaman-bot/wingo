@@ -1,291 +1,325 @@
-// WINGO PREDICTOR - সম্পূর্ণ স্ক্রিপ্ট
-// স্কোয়ার উইজেট + ৩০ সেকেন্ড টাইমার + ফুলস্ক্রিন
+// ===== SITE URLS =====
+const SITES = {
+    hgnice: "https://hgnice.biz/#/register?invitationCode=255721948910",
+    dkwin:  "https://dkwin9.com/#/register?invitationCode=87267393546"
+};
 
-(function() {
-    // ========== গ্লোবাল ভ্যারিয়েবল ==========
-    let periodCounter = 11181;
-    let timeLeft = 30;
-    let currentInterval = null;
-    
-    // আউটকামের অপশন
-    const outcomes = ['লাল', 'সবুজ', 'বেগুনি'];
-    const outcomeColors = {
-        'লাল': '#ff4d6d',
-        'সবুজ': '#2effcf',
-        'বেগুনি': '#c084fc'
-    };
-    
-    let historyQueue = [];
-    
-    // DOM এলিমেন্টস
-    const countdownEl = document.getElementById('countdownDisplay');
-    const periodSpan = document.getElementById('periodValue');
-    const predictionResultSpan = document.getElementById('predictionResult');
-    const historyContainer = document.getElementById('historyContainer');
-    const predictionSquare = document.getElementById('predictionSquare');
-    const fullscreenBtn = document.getElementById('fullscreenToggleBtn');
-    const lookJackpotBtn = document.getElementById('lookJackpotBtn');
-    
-    // ========== ডেটা লোড (স্কোয়ার উইজেট কন্টেন্ট) ==========
-    const jackpotData = [
-        { prize: '₱২৫.৬৬X', name: 'এভিয়েটর · বুস্টার', bet: 'ন্যূনতম ₱১০০' },
-        { prize: '₱২৩.২৩X', name: 'এভিয়েটর · প্রো', bet: 'ম্যাক্স মাল্টি' },
-        { prize: '₱১৮.৮৮X', name: 'ড্রাগন ক্র্যাশ', bet: 'হট রিওয়ার্ড' },
-        { prize: '₱৯৯.৯৯X', name: 'সুপার জ্যাকপট', bet: '₱৩,০০০ টপ বেট' }
-    ];
-    
-    const slotsData = [
-        { icon: '✈️', name: 'এভিয়েটর', price: '₱১০০.০০' },
-        { icon: '🃏', name: 'সুপার এইস', price: '₱২০০.০০' },
-        { icon: '🔥', name: 'সুপার এইস', price: '₱১০০.০০' },
-        { icon: '⚡', name: 'লাইটনিং বক্স', price: '₱১৫০.০০' }
-    ];
-    
-    const liveBetsData = [
-        { prize: '₱২৫.৬৬X', name: 'এভিয়েটর', status: 'স্টপড' },
-        { prize: '₱২৩.২৩X', name: 'এভিয়েটর', status: 'একটিভ' },
-        { prize: '₱৫০X', name: 'টার্বো গেমস', status: 'জেডিবি' },
-        { prize: '₱১২.৪০X', name: 'প্রাগম্যাটিক', status: 'ইভোলুশন' }
-    ];
-    
-    // জ্যাকপট গ্রিড রেন্ডার
-    function renderJackpotGrid() {
-        const container = document.getElementById('jackpotGrid');
-        if (!container) return;
-        container.innerHTML = jackpotData.map(item => `
-            <div class="square-card">
-                <div class="prize-mult">${item.prize}</div>
-                <div class="game-name">${item.name}</div>
-                <div class="bet-amount">${item.bet}</div>
-            </div>
-        `).join('');
+// ===== DOM ELEMENTS =====
+const siteSelectorScreen   = document.getElementById('siteSelectorScreen');
+const mainApp              = document.getElementById('mainApp');
+const mainIframe           = document.getElementById('mainIframe');
+const hgniceBtn            = document.getElementById('hgniceBtn');
+const dkwinBtn             = document.getElementById('dkwinBtn');
+const homeIcon             = document.getElementById('homeIcon');
+
+const periodDisplay        = document.getElementById('periodDisplay');
+const timerSecondsSpan     = document.getElementById('timerSeconds');
+const predictionNumberSpan = document.getElementById('predictionNumber');
+const sizeValueSpan        = document.getElementById('sizeValue');
+const colorValueSpan       = document.getElementById('colorValue');
+const timeModeLabel        = document.getElementById('timeModeLabel');
+const statusBarSpan        = document.querySelector('#statusBar span');
+const statusBarDiv         = document.getElementById('statusBar');
+
+const modalOverlay         = document.getElementById('modalOverlay');
+const settingsIcon         = document.getElementById('settingsIcon');
+const closeModalBtn        = document.getElementById('closeModalBtn');
+const periodInput          = document.getElementById('periodInput');
+const timeOptions          = document.querySelectorAll('.time-option');
+const modalStartBtn        = document.getElementById('modalStartBtn');
+const modalStopBtn         = document.getElementById('modalStopBtn');
+
+const sizeCard             = document.getElementById('sizeCard');
+const colorCard            = document.getElementById('colorCard');
+const numberBoxSpan        = document.querySelector('#numberBox span');
+const predictionWidget     = document.getElementById('predictionWidget');
+
+// ===== STATE =====
+let selectedTimeSec = 30;
+let currentPeriod   = 11181;
+let timerInterval   = null;
+let isActive        = false;
+let timeLeft        = 0;
+
+// ===== SITE SELECTOR =====
+function launchSite(siteKey) {
+    mainIframe.src = SITES[siteKey];
+    siteSelectorScreen.style.display = 'none';
+    mainApp.style.display = 'block';
+    // Reset widget to top-right on each launch
+    predictionWidget.style.top    = '10px';
+    predictionWidget.style.right  = '10px';
+    predictionWidget.style.left   = 'auto';
+    predictionWidget.style.bottom = 'auto';
+    initialPreview();
+}
+
+hgniceBtn.addEventListener('click', () => launchSite('hgnice'));
+dkwinBtn.addEventListener('click',  () => launchSite('dkwin'));
+
+homeIcon.addEventListener('click', () => {
+    stopAndReset();
+    mainApp.style.display = 'none';
+    mainIframe.src = '';
+    siteSelectorScreen.style.display = 'flex';
+    modalOverlay.classList.remove('show');
+});
+
+// ===== DRAGGABLE WIDGET =====
+(function makeDraggable() {
+    let isDragging = false;
+    let startX, startY, origLeft, origTop;
+
+    function getWidgetLeft() {
+        return predictionWidget.getBoundingClientRect().left;
     }
-    
-    // স্লট গ্রিড রেন্ডার
-    function renderSlotsGrid() {
-        const container = document.getElementById('slotsGrid');
-        if (!container) return;
-        container.innerHTML = slotsData.map(item => `
-            <div class="slot-card">
-                <div class="slot-icon">${item.icon}</div>
-                <div class="slot-title">${item.name}</div>
-                <div class="slot-price">${item.price}</div>
-            </div>
-        `).join('');
+    function getWidgetTop() {
+        return predictionWidget.getBoundingClientRect().top;
     }
-    
-    // লাইভ বেটস গ্রিড রেন্ডার
-    function renderLiveBetsGrid() {
-        const container = document.getElementById('liveBetsGrid');
-        if (!container) return;
-        container.innerHTML = liveBetsData.map(item => `
-            <div class="square-card">
-                <div class="prize-mult">${item.prize}</div>
-                <div class="game-name">${item.name}</div>
-                <div class="bet-amount">${item.status}</div>
-            </div>
-        `).join('');
+
+    function applyPos(left, top) {
+        const w = predictionWidget.offsetWidth;
+        const h = predictionWidget.offsetHeight;
+        left = Math.max(0, Math.min(window.innerWidth  - w, left));
+        top  = Math.max(0, Math.min(window.innerHeight - h, top));
+        predictionWidget.style.left   = left + 'px';
+        predictionWidget.style.top    = top  + 'px';
+        predictionWidget.style.right  = 'auto';
+        predictionWidget.style.bottom = 'auto';
     }
-    
-    // ========== হিস্ট্রি ফাংশন ==========
-    function addHistoryEntry(result) {
-        historyQueue.unshift(result);
-        if (historyQueue.length > 6) historyQueue.pop();
-        renderHistory();
+
+    function onDragStart(clientX, clientY) {
+        isDragging = true;
+        startX   = clientX;
+        startY   = clientY;
+        origLeft = getWidgetLeft();
+        origTop  = getWidgetTop();
+        predictionWidget.classList.add('dragging');
     }
-    
-    function renderHistory() {
-        if (!historyContainer) return;
-        if (historyQueue.length === 0) {
-            historyContainer.innerHTML = '<div class="history-chip chip-green">রেডি</div>';
-            return;
-        }
-        historyContainer.innerHTML = historyQueue.map(res => {
-            let chipClass = '';
-            if (res === 'লাল') chipClass = 'chip-red';
-            else if (res === 'সবুজ') chipClass = 'chip-green';
-            else if (res === 'বেগুনি') chipClass = 'chip-violet';
-            return `<div class="history-chip ${chipClass}">🎲 ${res}</div>`;
-        }).join('');
+
+    function onDragMove(clientX, clientY) {
+        if (!isDragging) return;
+        applyPos(
+            origLeft + (clientX - startX),
+            origTop  + (clientY - startY)
+        );
     }
-    
-    // ========== প্রেডিকশন জেনারেট ==========
-    function generatePrediction() {
-        const randomIndex = Math.floor(Math.random() * outcomes.length);
-        const newResult = outcomes[randomIndex];
-        
-        // UI আপডেট
-        predictionResultSpan.innerText = newResult;
-        predictionResultSpan.style.background = `linear-gradient(135deg, #fff, ${outcomeColors[newResult]})`;
-        predictionResultSpan.style.webkitBackgroundClip = 'text';
-        predictionResultSpan.style.backgroundClip = 'text';
-        predictionResultSpan.style.color = 'transparent';
-        
-        // এনিমেশন
-        predictionResultSpan.classList.add('win-animation');
-        setTimeout(() => predictionResultSpan.classList.remove('win-animation'), 400);
-        
-        // হিস্ট্রিতে যোগ
-        addHistoryEntry(newResult);
-        
-        // বর্ডার ফ্ল্যাশ
-        if (predictionSquare) {
-            predictionSquare.style.borderColor = outcomeColors[newResult];
-            setTimeout(() => {
-                predictionSquare.style.borderColor = 'rgba(46, 255, 207, 0.7)';
-            }, 700);
-        }
-        
-        return newResult;
+
+    function onDragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        predictionWidget.classList.remove('dragging');
     }
-    
-    function incrementPeriod() {
-        periodCounter++;
-        if (periodSpan) periodSpan.innerText = periodCounter;
-    }
-    
-    // ========== টাইমার ফাংশন ==========
-    function updateTimerDisplay() {
-        if (countdownEl) countdownEl.innerText = timeLeft;
-        
-        // শেষ ৫ সেকেন্ডে ভিজ্যুয়াল ইফেক্ট
-        if (timeLeft <= 5) {
-            countdownEl.style.textShadow = '0 0 12px #ffaa33';
-        } else {
-            countdownEl.style.textShadow = '0 0 8px #00ffc3';
-        }
-    }
-    
-    function onTimerComplete() {
-        generatePrediction();
-        incrementPeriod();
-        timeLeft = 30;
-        updateTimerDisplay();
-        startTimer();
-    }
-    
-    function startTimer() {
-        if (currentInterval) clearInterval(currentInterval);
-        currentInterval = setInterval(() => {
-            if (timeLeft <= 1) {
-                clearInterval(currentInterval);
-                currentInterval = null;
-                onTimerComplete();
-            } else {
-                timeLeft--;
-                updateTimerDisplay();
-            }
-        }, 1000);
-    }
-    
-    // ========== ফুলস্ক্রিন ফাংশন ==========
-    function toggleFullscreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.warn(err);
-            });
-            if (fullscreenBtn) fullscreenBtn.innerHTML = '✖ এক্সিট ফুল';
-        } else {
-            document.exitFullscreen();
-            if (fullscreenBtn) fullscreenBtn.innerHTML = '⛶ ফুলস্ক্রিন';
-        }
-    }
-    
-    // ফুলস্ক্রিন চেঞ্জ ইভেন্ট
-    document.addEventListener('fullscreenchange', () => {
-        if (fullscreenBtn) {
-            if (document.fullscreenElement) {
-                fullscreenBtn.innerHTML = '✖ এক্সিট ফুল';
-            } else {
-                fullscreenBtn.innerHTML = '⛶ ফুলস্ক্রিন';
-            }
-        }
+
+    // Touch
+    predictionWidget.addEventListener('touchstart', (e) => {
+        if (e.target.closest('button')) return;
+        const t = e.touches[0];
+        onDragStart(t.clientX, t.clientY);
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const t = e.touches[0];
+        onDragMove(t.clientX, t.clientY);
+    }, { passive: true });
+
+    document.addEventListener('touchend', onDragEnd);
+
+    // Mouse
+    predictionWidget.addEventListener('mousedown', (e) => {
+        if (e.target.closest('button')) return;
+        onDragStart(e.clientX, e.clientY);
+        e.preventDefault();
     });
-    
-    // ========== জ্যাকপট নোটিফিকেশন ==========
-    function showJackpotNotification() {
-        const notification = document.createElement('div');
-        notification.innerText = '✨ সুপার জ্যাকপট ট্রিগার! ✨ অতিরিক্ত পুরস্কার মাল্টিপ্লাইড! ✨';
-        notification.style.cssText = `
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #ffba2e, #ff8c2e);
-            color: #000;
-            padding: 14px 32px;
-            border-radius: 60px;
-            font-weight: bold;
-            z-index: 9999;
-            box-shadow: 0 0 40px gold;
-            backdrop-filter: blur(8px);
-            font-size: 0.9rem;
-            white-space: nowrap;
-            animation: slideUp 0.3s ease;
-        `;
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 2500);
-    }
-    
-    // ========== ক্যাটাগরি ক্লিক ইফেক্ট ==========
-    function initCategoryClick() {
-        const cats = document.querySelectorAll('.cat-item');
-        cats.forEach(cat => {
-            cat.addEventListener('click', function() {
-                cats.forEach(c => c.classList.remove('active'));
-                this.classList.add('active');
-                // ক্যাটাগরি অনুযায়ী কিছু করতে চাইলে এখানে লজিক যোগ করুন
-            });
-        });
-    }
-    
-    // ========== ইনিশিয়াল প্রেডিকশন ==========
-    function setInitialPrediction() {
-        const initRes = outcomes[Math.floor(Math.random() * outcomes.length)];
-        predictionResultSpan.innerText = initRes;
-        predictionResultSpan.style.background = `linear-gradient(135deg, #fff, ${outcomeColors[initRes]})`;
-        predictionResultSpan.style.webkitBackgroundClip = 'text';
-        predictionResultSpan.style.backgroundClip = 'text';
-        predictionResultSpan.style.color = 'transparent';
-        
-        // ইনিশিয়াল হিস্ট্রি
-        historyQueue = ['সবুজ', 'বেগুনি', 'লাল'];
-        renderHistory();
-    }
-    
-    // ========== অ্যানিমেশন স্টাইল অ্যাড ==========
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-    `;
-    document.head.appendChild(style);
-    
-    // ========== ইভেন্ট লিসেনার ==========
-    if (fullscreenBtn) {
-        fullscreenBtn.addEventListener('click', toggleFullscreen);
-    }
-    
-    if (lookJackpotBtn) {
-        lookJackpotBtn.addEventListener('click', showJackpotNotification);
-    }
-    
-    // ========== সবকিছু লোড করা ==========
-    function init() {
-        renderJackpotGrid();
-        renderSlotsGrid();
-        renderLiveBetsGrid();
-        initCategoryClick();
-        setInitialPrediction();
-        startTimer();
-    }
-    
-    // DOM লোড হলে শুরু করো
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+
+    document.addEventListener('mousemove', (e) => {
+        onDragMove(e.clientX, e.clientY);
+    });
+
+    document.addEventListener('mouseup', onDragEnd);
 })();
+
+// ===== SIGNAL GENERATOR =====
+function generateRandomSignal() {
+    const number = Math.floor(Math.random() * 10);
+    let size = "", color = "", colorType = "";
+
+    if (number === 0) {
+        size = "SMALL"; color = "VIO/RED";   colorType = "violet";
+    } else if (number === 5) {
+        size = "BIG";   color = "VIO/GREEN"; colorType = "violet";
+    } else if ([1, 3, 7, 9].includes(number)) {
+        size = "SMALL"; color = "GREEN";     colorType = "green";
+    } else if ([2, 4, 6, 8].includes(number)) {
+        size = "BIG";   color = "RED";       colorType = "red";
+    }
+
+    return { number, size, color, colorType };
+}
+
+// ===== UPDATE UI =====
+function updatePredictionUI() {
+    const { number, size, color, colorType } = generateRandomSignal();
+
+    // Remove old animations
+    predictionNumberSpan.classList.remove('animate-pop');
+    sizeValueSpan.classList.remove('animate-pop');
+    colorValueSpan.classList.remove('animate-pop');
+    void predictionNumberSpan.offsetWidth; // reflow
+
+    predictionNumberSpan.textContent = number;
+    sizeValueSpan.textContent        = size;
+    colorValueSpan.textContent       = color;
+
+    // Clear old highlight
+    numberBoxSpan.classList.remove(
+        'color-green-text', 'color-red-text', 'color-violet-text'
+    );
+    sizeCard.classList.remove(
+        'bg-green-light', 'bg-red-light', 'bg-violet-light'
+    );
+    colorCard.classList.remove(
+        'bg-green-light', 'bg-red-light', 'bg-violet-light'
+    );
+
+    // Apply new highlight
+    if (colorType === 'green') {
+        numberBoxSpan.classList.add('color-green-text');
+        sizeCard.classList.add('bg-green-light');
+        colorCard.classList.add('bg-green-light');
+    } else if (colorType === 'red') {
+        numberBoxSpan.classList.add('color-red-text');
+        sizeCard.classList.add('bg-red-light');
+        colorCard.classList.add('bg-red-light');
+    } else if (colorType === 'violet') {
+        numberBoxSpan.classList.add('color-violet-text');
+        sizeCard.classList.add('bg-violet-light');
+        colorCard.classList.add('bg-violet-light');
+    }
+
+    predictionNumberSpan.classList.add('animate-pop');
+    sizeValueSpan.classList.add('animate-pop');
+    colorValueSpan.classList.add('animate-pop');
+}
+
+// ===== COUNTDOWN =====
+function startCountdown(seconds) {
+    if (timerInterval) clearInterval(timerInterval);
+    timeLeft = seconds;
+    timerSecondsSpan.innerText = timeLeft;
+
+    timerInterval = setInterval(() => {
+        if (!isActive) return;
+        if (timeLeft <= 1) {
+            clearInterval(timerInterval);
+            timerSecondsSpan.innerText = 0;
+            onRoundComplete();
+        } else {
+            timeLeft--;
+            timerSecondsSpan.innerText = timeLeft;
+        }
+    }, 1000);
+}
+
+function onRoundComplete() {
+    if (!isActive) return;
+    currentPeriod++;
+    periodDisplay.innerText = currentPeriod;
+    periodInput.value        = currentPeriod;
+    updatePredictionUI();
+    startCountdown(selectedTimeSec);
+}
+
+// ===== START =====
+function saveAndStart() {
+    if (timerInterval) clearInterval(timerInterval);
+
+    let newPeriod = parseInt(periodInput.value);
+    if (isNaN(newPeriod) || newPeriod < 1) newPeriod = 1;
+    currentPeriod = newPeriod;
+    periodDisplay.innerText = currentPeriod;
+
+    isActive = true;
+    updatePredictionUI();
+    startCountdown(selectedTimeSec);
+
+    statusBarSpan.textContent      = '🟢 RUNNING';
+    statusBarDiv.style.background  = 'rgba(0,170,85,0.2)';
+    statusBarSpan.style.color      = '#88ffcc';
+
+    modalOverlay.classList.remove('show');
+}
+
+// ===== STOP =====
+function stopAndReset() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    isActive = false;
+    timerSecondsSpan.innerText   = "0";
+    periodDisplay.innerText      = currentPeriod;
+
+    predictionNumberSpan.textContent = "?";
+    sizeValueSpan.textContent        = "---";
+    colorValueSpan.textContent       = "---";
+
+    numberBoxSpan.classList.remove(
+        'color-green-text', 'color-red-text', 'color-violet-text'
+    );
+    sizeCard.classList.remove(
+        'bg-green-light', 'bg-red-light', 'bg-violet-light'
+    );
+    colorCard.classList.remove(
+        'bg-green-light', 'bg-red-light', 'bg-violet-light'
+    );
+
+    statusBarSpan.textContent     = '⚫ STOPPED';
+    statusBarDiv.style.background = 'rgba(50,50,50,0.35)';
+    statusBarSpan.style.color     = '#888';
+}
+
+// ===== TIME OPTIONS =====
+timeOptions.forEach(btn => {
+    btn.addEventListener('click', () => {
+        selectedTimeSec = parseInt(btn.getAttribute('data-time'));
+        timeOptions.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        timeModeLabel.innerText = selectedTimeSec === 30 ? "30 SEC" : "1 MIN";
+    });
+});
+
+// Default: 30 sec active
+document.querySelector('.time-option[data-time="30"]').classList.add('active');
+
+// ===== MODAL =====
+settingsIcon.addEventListener('click', () => {
+    periodInput.value = currentPeriod;
+    modalOverlay.classList.add('show');
+});
+
+closeModalBtn.addEventListener('click', () => {
+    modalOverlay.classList.remove('show');
+});
+
+modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) modalOverlay.classList.remove('show');
+});
+
+modalStartBtn.addEventListener('click', saveAndStart);
+
+modalStopBtn.addEventListener('click', () => {
+    stopAndReset();
+    modalOverlay.classList.remove('show');
+});
+
+// ===== INITIAL PREVIEW =====
+function initialPreview() {
+    const { number, size, color } = generateRandomSignal();
+    predictionNumberSpan.textContent = number;
+    sizeValueSpan.textContent        = size;
+    colorValueSpan.textContent       = color;
+}
+
+periodInput.addEventListener('focus', (e) => e.stopPropagation());

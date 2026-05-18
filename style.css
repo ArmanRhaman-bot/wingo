@@ -2,399 +2,335 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    user-select: none;
 }
 
 body {
-    background: radial-gradient(circle at 20% 30%, #0a0f1f, #03060c);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    color: #edf4ff;
-    min-height: 100vh;
-    padding: 20px;
-    position: relative;
-}
-
-/* scanline ইফেক্ট */
-body::before {
-    content: "";
+    background: #0a0f1e;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
     position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(0deg, rgba(0,255,200,0.02) 0px, rgba(0,255,200,0.02) 2px, transparent 2px, transparent 6px);
-    pointer-events: none;
-    z-index: 2;
 }
 
 .app-container {
-    max-width: 1300px;
-    margin: 0 auto;
     position: relative;
-    z-index: 5;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
-/* হেডার */
-.header-row {
+/* ===== SITE SELECTOR ===== */
+.site-selector {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(160deg, #0a0f1e 0%, #0f1829 50%, #0a0f1e 100%);
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 28px;
-    background: rgba(8, 18, 28, 0.65);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 255, 200, 0.25);
-    border-radius: 28px;
-    padding: 12px 24px;
+    justify-content: center;
+    z-index: 9999;
 }
 
-.brand h1 {
-    font-size: 1.8rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #ffffff, #2effe0, #00c3ff);
+.selector-box {
+    background: rgba(12, 18, 35, 0.98);
+    border: 1px solid rgba(255, 200, 50, 0.35);
+    border-radius: 28px;
+    padding: 38px 26px 32px;
+    width: 86%;
+    max-width: 340px;
+    text-align: center;
+    box-shadow:
+        0 0 0 1px rgba(255,200,50,0.08),
+        0 24px 64px rgba(0,0,0,0.7);
+    animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.selector-logo {
+    font-size: 1.75rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #FFD966, #FF8C00);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    letter-spacing: -0.5px;
-}
-
-.brand p {
-    font-size: 0.7rem;
-    color: #77ddff;
+    margin-bottom: 6px;
     letter-spacing: 1px;
 }
 
-.timer-panel {
-    background: #04131fcc;
-    border-radius: 60px;
-    padding: 8px 20px;
-    border: 1px solid #2effcf40;
-    text-align: center;
-    min-width: 160px;
+.selector-subtitle {
+    color: #667;
+    font-size: 0.78rem;
+    margin-bottom: 28px;
+    letter-spacing: 0.3px;
 }
 
-.timer-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #7fcdff;
-}
-
-.countdown {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 2.2rem;
-    font-weight: 800;
-    line-height: 1;
-    color: #f0ffb0;
-    text-shadow: 0 0 8px #00ffc3;
-}
-
-.period-badge {
-    background: #0b1a2a;
-    border-radius: 40px;
-    padding: 6px 16px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    border-left: 3px solid #2effcf;
-}
-
-.fullscreen-btn {
-    background: rgba(0, 255, 200, 0.08);
-    border: 1px solid #2effcf60;
-    border-radius: 40px;
-    padding: 8px 18px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-    color: #bbf0ff;
-}
-
-.fullscreen-btn:hover {
-    background: #2effcf20;
-    border-color: #2effcf;
-    transform: scale(0.98);
-}
-
-/* প্রধান প্রেডিকশন স্কোয়ার */
-.prediction-hero {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 40px;
-}
-
-.square-prediction {
-    aspect-ratio: 1 / 1;
-    width: 100%;
-    max-width: 280px;
-    background: linear-gradient(145deg, #071824, #010b14);
-    border-radius: 32px;
-    border: 2px solid rgba(46, 255, 207, 0.5);
-    box-shadow: 0 0 30px rgba(0,255,200,0.2);
+.selector-buttons {
     display: flex;
     flex-direction: column;
+    gap: 14px;
+}
+
+.site-btn {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
+    gap: 16px;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    text-align: left;
+    width: 100%;
 }
 
-.result-label {
-    font-size: 1.2rem;
-    letter-spacing: 4px;
-    font-weight: 500;
-    color: #b3ecff;
+.site-btn:active {
+    transform: scale(0.96);
 }
 
-.result-value {
-    font-size: 3rem;
+.hgnice-btn {
+    background: linear-gradient(135deg, #e55d00, #ff9500);
+    box-shadow: 0 6px 20px rgba(229,93,0,0.35);
+}
+
+.dkwin-btn {
+    background: linear-gradient(135deg, #0f4fc0, #2e7dff);
+    box-shadow: 0 6px 20px rgba(15,79,192,0.35);
+}
+
+.site-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.site-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.site-name {
+    font-size: 1.15rem;
     font-weight: 800;
-    font-family: 'JetBrains Mono', monospace;
-    text-transform: uppercase;
-    background: linear-gradient(135deg, #fff, #5effe0);
+    color: white;
+    letter-spacing: 1px;
+    display: block;
+}
+
+.site-desc {
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.7);
+    display: block;
+}
+
+/* ===== MAIN APP ===== */
+.main-app {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.iframe-wrapper {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+}
+
+.iframe-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: white;
+}
+
+/* ===== PREDICTION WIDGET ===== */
+.prediction-widget {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    left: auto;
+    bottom: auto;
+    width: 152px;
+    background: rgba(7, 11, 22, 0.97);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 200, 50, 0.5);
+    box-shadow:
+        0 0 0 1px rgba(255,200,50,0.08),
+        0 12px 32px rgba(0,0,0,0.75);
+    z-index: 9000;
+    padding: 6px 8px 8px;
+    touch-action: none;
+    cursor: grab;
+    transition: opacity 0.15s ease;
+}
+
+.prediction-widget.dragging {
+    opacity: 0.88;
+    cursor: grabbing;
+    box-shadow:
+        0 0 0 1px rgba(255,200,50,0.2),
+        0 20px 50px rgba(0,0,0,0.85);
+}
+
+/* Drag Handle */
+.drag-handle {
+    text-align: center;
+    margin-bottom: 4px;
+    padding: 2px 0;
+    cursor: grab;
+}
+
+.drag-dots {
+    color: rgba(255,200,50,0.3);
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+}
+
+/* Header */
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 7px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 200, 50, 0.2);
+}
+
+.title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.wingo-badge {
+    font-weight: 800;
+    font-size: 0.7rem;
+    background: linear-gradient(135deg, #FFD966, #FF8C00);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    letter-spacing: 0.5px;
 }
 
-.jackpot-tag {
-    font-size: 0.7rem;
-    margin-top: 12px;
-    color: #ffcc66;
-}
-
-.win-animation {
-    animation: pulseWin 0.4s ease;
-}
-
-@keyframes pulseWin {
-    0% { text-shadow: 0 0 0px #2effcf; transform: scale(1);}
-    50% { text-shadow: 0 0 25px #2effcf; transform: scale(1.05);}
-}
-
-/* ক্যাটাগরি */
-.categories {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 36px;
-    justify-content: center;
-}
-
-.cat-item {
-    background: rgba(10, 25, 40, 0.8);
-    border: 1px solid #2effcf40;
-    border-radius: 60px;
-    padding: 8px 20px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    backdrop-filter: blur(4px);
-    transition: 0.2s;
-    cursor: pointer;
-}
-
-.cat-item.active {
-    background: #2effcf20;
-    border-color: #2effcf;
-    color: white;
-    box-shadow: 0 0 12px #2effcf40;
-}
-
-/* সেকশন টাইটেল */
-.section-title {
-    font-size: 1.2rem;
+.time-mode {
+    font-size: 0.5rem;
+    background: rgba(255,140,0,0.15);
+    padding: 2px 6px;
+    border-radius: 5px;
     font-weight: 700;
-    margin: 28px 0 14px 0;
+    color: #ffaa55;
+    letter-spacing: 0.8px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.header-icons {
     display: flex;
+    gap: 3px;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-    border-left: 4px solid #2effcf;
-    padding-left: 14px;
 }
 
-.section-title small {
-    font-size: 0.7rem;
-    color: #ffaa66;
-    font-weight: normal;
-}
-
-/* জ্যাকপট গ্রিড - স্কোয়ার উইজেট */
-.jackpot-grid, .slots-grid, .live-bets-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 18px;
-    margin-bottom: 20px;
-}
-
-.square-card {
-    background: linear-gradient(145deg, #0b1624, #040b12);
-    border-radius: 24px;
-    border: 1px solid rgba(0, 255, 200, 0.25);
-    aspect-ratio: 1 / 1;
+.icon-btn {
+    background: rgba(255,255,255,0.07);
+    border: none;
+    font-size: 0.78rem;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 7px;
+    width: 24px;
+    height: 24px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    transition: background 0.15s;
+}
+
+.icon-btn:active {
+    background: rgba(255,200,50,0.25);
+    transform: scale(0.9);
+}
+
+/* Period */
+.period-row {
     text-align: center;
-    transition: 0.25s;
-    padding: 12px;
-    backdrop-filter: blur(2px);
+    background: rgba(0,0,0,0.35);
+    padding: 5px 4px 4px;
+    border-radius: 9px;
+    margin-bottom: 8px;
 }
 
-.square-card:hover {
-    border-color: #2effcf;
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+.period-row label {
+    font-size: 0.45rem;
+    color: #666;
+    display: block;
+    letter-spacing: 1.5px;
+    margin-bottom: 1px;
 }
 
-.prize-mult {
-    font-size: 1.5rem;
+.period-value {
+    font-size: 0.95rem;
     font-weight: 800;
-    color: #f5c542;
-    font-family: monospace;
+    font-family: 'Courier New', monospace;
+    color: #ffd966;
+    letter-spacing: 2px;
 }
 
-.game-name {
-    font-size: 0.8rem;
-    font-weight: 500;
-    margin-top: 10px;
-    color: #bbddff;
-}
-
-.bet-amount {
-    font-size: 0.75rem;
-    background: #00000055;
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-top: 8px;
-}
-
-/* স্লট কার্ড */
-.slot-card {
-    background: #0d1a28;
-    border-radius: 24px;
-    aspect-ratio: 1 / 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #2effcf30;
-    transition: all 0.2s;
-}
-
-.slot-icon {
-    font-size: 2.4rem;
-    font-weight: 800;
-    background: rgba(0,0,0,0.5);
+/* Timer Circle */
+.timer-circle {
     width: 64px;
     height: 64px;
+    margin: 0 auto 8px;
+    background: linear-gradient(145deg, #1a2236, #0d1220);
+    border-radius: 50%;
+    border: 2px solid #ffaa33;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 30px;
-    margin-bottom: 10px;
+    box-shadow:
+        0 0 16px rgba(255,170,51,0.2),
+        inset 0 1px 0 rgba(255,200,50,0.1);
 }
 
-.slot-title {
-    font-weight: 700;
-    font-size: 1rem;
+.timer-circle span {
+    font-size: 1.45rem;
+    font-weight: 900;
+    font-family: 'Courier New', monospace;
+    color: #ffaa33;
+    line-height: 1;
 }
 
-.slot-price {
-    font-size: 0.8rem;
-    color: #aaffdd;
-    font-family: monospace;
-    margin-top: 6px;
+.timer-circle small {
+    font-size: 0.4rem;
+    color: #888;
+    letter-spacing: 1.5px;
+    margin-top: 1px;
 }
 
-/* জ্যাকপট বাটন */
-.look-jackpot-btn {
-    background: linear-gradient(95deg, #ff8c2e, #ff4d6d);
-    border: none;
-    border-radius: 60px;
-    padding: 12px 28px;
-    font-weight: 700;
-    color: white;
-    margin: 20px auto 10px;
+/* Number Box */
+.number-box {
+    text-align: center;
+    margin: 6px 0;
+}
+
+.number-box span {
+    font-size: 2rem;
+    font-weight: 900;
+    background: #131824;
     display: inline-block;
+    padding: 3px 0;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.6);
+    transition: all 0.2s;
+    width: 100%;
     text-align: center;
-    cursor: pointer;
-    transition: 0.2s;
-    font-size: 1rem;
-    letter-spacing: 1px;
-    box-shadow: 0 4px 20px #ff4d6d40;
-}
-
-.look-jackpot-btn:hover {
-    transform: scale(1.02);
-    box-shadow: 0 8px 28px #ff4d6d80;
-}
-
-/* হিস্ট্রি প্যানেল */
-.history-panel {
-    background: rgba(3, 12, 22, 0.7);
-    border-radius: 28px;
-    padding: 16px;
-    margin-top: 36px;
-    border: 1px solid #2effcf20;
-}
-
-.history-title {
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    color: #7effe0;
-    margin-bottom: 10px;
-}
-
-.history-bubbles {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.history-chip {
-    background: #04121f;
-    padding: 6px 14px;
-    border-radius: 40px;
-    font-family: monospace;
-    font-weight: 600;
-    border-left: 3px solid currentColor;
-}
-
-.history-note {
-    font-size: 0.7rem;
-    margin-top: 12px;
-    color: #67c8ff;
-}
-
-.chip-red { border-left-color: #ff4760; color: #ff768a; }
-.chip-green { border-left-color: #2effcf; color: #84ffdd; }
-.chip-violet { border-left-color: #b273ff; color: #d6b0ff; }
-
-/* ফুটার */
-footer {
-    margin-top: 48px;
-    text-align: center;
-    font-size: 0.7rem;
-    color: #4f6d8f;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    padding-top: 20px;
-    border-top: 1px solid #2effcf20;
-}
-
-.footer-brand {
-    font-weight: 700;
-    letter-spacing: 2px;
-}
-
-/* মোবাইল রেসপন্সিভ */
-@media (max-width: 580px) {
-    .header-row { flex-direction: column; align-items: stretch; }
-    .square-card, .slot-card { min-width: 120px; }
-    .jackpot-grid, .slots-grid, .live-bets-grid { grid-template-columns: repeat(2, 1fr); }
-    .section-title { flex-direction: column; align-items: flex-start; }
-}
+    c

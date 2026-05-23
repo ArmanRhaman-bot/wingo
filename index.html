@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>WINGO Prediction | Trading Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>WINGO Prediction Tool</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -34,71 +34,59 @@
         </div>
     </div>
 
-    <!-- Main App -->
+    <!-- Main App (Full Screen Prediction) -->
     <div class="main-app" id="mainApp" style="display:none;">
 
-        <!-- Embedded iframe -->
-        <div class="iframe-wrapper">
-            <iframe id="mainIframe"
-                    src=""
-                    title="Trading Platform"
-                    allow="accelerometer; clipboard-write; encrypted-media; fullscreen"
-                    referrerpolicy="strict-origin">
-            </iframe>
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-left">
+                <span class="wingo-badge">🎲 WINGO</span>
+                <span class="time-mode" id="timeModeLabel">30 SEC</span>
+            </div>
+            <div class="top-right">
+                <span class="platform-tag" id="platformTag">HGNICE</span>
+                <button class="icon-btn home-icon" id="homeIcon" title="Change Platform">🏠</button>
+                <button class="icon-btn settings-icon" id="settingsIcon" title="Settings">⚙️</button>
+            </div>
         </div>
 
-        <!-- Prediction Widget -->
-        <div class="prediction-widget" id="predictionWidget">
-
-            <!-- Drag Handle -->
-            <div class="drag-handle" id="dragHandle">
-                <span class="drag-dots">⠿</span>
-            </div>
-
-            <!-- Header -->
-            <div class="widget-header">
-                <div class="title">
-                    <span class="wingo-badge">🎲 WINGO</span>
-                    <span class="time-mode" id="timeModeLabel">30 SEC</span>
-                </div>
-                <div class="header-icons">
-                    <button class="icon-btn home-icon" id="homeIcon" title="Change Platform">🏠</button>
-                    <button class="icon-btn settings-icon" id="settingsIcon" title="Settings">⚙️</button>
-                </div>
-            </div>
+        <!-- Main Content -->
+        <div class="main-content">
 
             <!-- Period -->
-            <div class="period-row">
-                <label>PERIOD NO</label>
+            <div class="period-card">
+                <span class="period-label">PERIOD NO</span>
                 <div class="period-value" id="periodDisplay">11181</div>
             </div>
 
             <!-- Timer -->
-            <div class="timer-circle" id="timerCircle">
-                <span id="timerSeconds">30</span>
-                <small>SEC</small>
+            <div class="timer-wrap">
+                <div class="timer-circle" id="timerCircle">
+                    <span id="timerSeconds">30</span>
+                    <small>SEC</small>
+                </div>
             </div>
 
-            <!-- Number -->
+            <!-- Big Number -->
             <div class="number-box" id="numberBox">
                 <span id="predictionNumber">?</span>
             </div>
 
             <!-- Size & Color -->
             <div class="result-row">
-                <div class="size-card" id="sizeCard">
-                    <span>SIZE</span>
-                    <strong id="sizeValue">---</strong>
+                <div class="result-card size-card" id="sizeCard">
+                    <span class="rc-label">SIZE</span>
+                    <strong class="rc-value" id="sizeValue">---</strong>
                 </div>
-                <div class="color-card" id="colorCard">
-                    <span>COLOR</span>
-                    <strong id="colorValue">---</strong>
+                <div class="result-card color-card" id="colorCard">
+                    <span class="rc-label">COLOR</span>
+                    <strong class="rc-value" id="colorValue">---</strong>
                 </div>
             </div>
 
             <!-- Status -->
             <div class="status-bar" id="statusBar">
-                <span>⚫ STOPPED</span>
+                <span id="statusText">⚫ STOPPED</span>
             </div>
 
         </div>

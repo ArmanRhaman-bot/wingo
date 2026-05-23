@@ -1,25 +1,19 @@
-// ===== SITE URLS =====
-const SITES = {
-    hgnice: "https://hgnice.biz/#/register?invitationCode=255721948910",
-    dkwin:  "https://dkwin9.com/#/register?invitationCode=87267393546"
-};
-
 // ===== DOM ELEMENTS =====
 const siteSelectorScreen   = document.getElementById('siteSelectorScreen');
 const mainApp              = document.getElementById('mainApp');
-const mainIframe           = document.getElementById('mainIframe');
 const hgniceBtn            = document.getElementById('hgniceBtn');
 const dkwinBtn             = document.getElementById('dkwinBtn');
 const homeIcon             = document.getElementById('homeIcon');
+const platformTag          = document.getElementById('platformTag');
 
 const periodDisplay        = document.getElementById('periodDisplay');
 const timerSecondsSpan     = document.getElementById('timerSeconds');
-const predictionNumberSpan = document.getElementById('predictionNumber');
-const sizeValueSpan        = document.getElementById('sizeValue');
-const colorValueSpan       = document.getElementById('colorValue');
+const predictionNumber     = document.getElementById('predictionNumber');
+const sizeValue            = document.getElementById('sizeValue');
+const colorValue           = document.getElementById('colorValue');
 const timeModeLabel        = document.getElementById('timeModeLabel');
-const statusBarSpan        = document.querySelector('#statusBar span');
-const statusBarDiv         = document.getElementById('statusBar');
+const statusText           = document.getElementById('statusText');
+const statusBar            = document.getElementById('statusBar');
 
 const modalOverlay         = document.getElementById('modalOverlay');
 const settingsIcon         = document.getElementById('settingsIcon');
@@ -31,8 +25,7 @@ const modalStopBtn         = document.getElementById('modalStopBtn');
 
 const sizeCard             = document.getElementById('sizeCard');
 const colorCard            = document.getElementById('colorCard');
-const numberBoxSpan        = document.querySelector('#numberBox span');
-const predictionWidget     = document.getElementById('predictionWidget');
+const numberBox            = document.querySelector('#numberBox span');
 
 // ===== STATE =====
 let selectedTimeSec = 30;
@@ -43,14 +36,9 @@ let timeLeft        = 0;
 
 // ===== SITE SELECTOR =====
 function launchSite(siteKey) {
-    mainIframe.src = SITES[siteKey];
+    platformTag.textContent = siteKey === 'hgnice' ? 'HGNICE' : 'DKWIN';
     siteSelectorScreen.style.display = 'none';
-    mainApp.style.display = 'block';
-    // Reset widget to top-right on each launch
-    predictionWidget.style.top    = '10px';
-    predictionWidget.style.right  = '10px';
-    predictionWidget.style.left   = 'auto';
-    predictionWidget.style.bottom = 'auto';
+    mainApp.style.display = 'flex';
     initialPreview();
 }
 
@@ -60,85 +48,9 @@ dkwinBtn.addEventListener('click',  () => launchSite('dkwin'));
 homeIcon.addEventListener('click', () => {
     stopAndReset();
     mainApp.style.display = 'none';
-    mainIframe.src = '';
     siteSelectorScreen.style.display = 'flex';
     modalOverlay.classList.remove('show');
 });
-
-// ===== DRAGGABLE WIDGET =====
-(function makeDraggable() {
-    let isDragging = false;
-    let startX, startY, origLeft, origTop;
-
-    function getWidgetLeft() {
-        return predictionWidget.getBoundingClientRect().left;
-    }
-    function getWidgetTop() {
-        return predictionWidget.getBoundingClientRect().top;
-    }
-
-    function applyPos(left, top) {
-        const w = predictionWidget.offsetWidth;
-        const h = predictionWidget.offsetHeight;
-        left = Math.max(0, Math.min(window.innerWidth  - w, left));
-        top  = Math.max(0, Math.min(window.innerHeight - h, top));
-        predictionWidget.style.left   = left + 'px';
-        predictionWidget.style.top    = top  + 'px';
-        predictionWidget.style.right  = 'auto';
-        predictionWidget.style.bottom = 'auto';
-    }
-
-    function onDragStart(clientX, clientY) {
-        isDragging = true;
-        startX   = clientX;
-        startY   = clientY;
-        origLeft = getWidgetLeft();
-        origTop  = getWidgetTop();
-        predictionWidget.classList.add('dragging');
-    }
-
-    function onDragMove(clientX, clientY) {
-        if (!isDragging) return;
-        applyPos(
-            origLeft + (clientX - startX),
-            origTop  + (clientY - startY)
-        );
-    }
-
-    function onDragEnd() {
-        if (!isDragging) return;
-        isDragging = false;
-        predictionWidget.classList.remove('dragging');
-    }
-
-    // Touch
-    predictionWidget.addEventListener('touchstart', (e) => {
-        if (e.target.closest('button')) return;
-        const t = e.touches[0];
-        onDragStart(t.clientX, t.clientY);
-    }, { passive: true });
-
-    document.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        const t = e.touches[0];
-        onDragMove(t.clientX, t.clientY);
-    }, { passive: true });
-
-    document.addEventListener('touchend', onDragEnd);
-
-    // Mouse
-    predictionWidget.addEventListener('mousedown', (e) => {
-        if (e.target.closest('button')) return;
-        onDragStart(e.clientX, e.clientY);
-        e.preventDefault();
-    });
-
-    document.addEventListener('mousemove', (e) => {
-        onDragMove(e.clientX, e.clientY);
-    });
-
-    document.addEventListener('mouseup', onDragEnd);
-})();
 
 // ===== SIGNAL GENERATOR =====
 function generateRandomSignal() {
@@ -151,7 +63,7 @@ function generateRandomSignal() {
         size = "BIG";   color = "VIO/GREEN"; colorType = "violet";
     } else if ([1, 3, 7, 9].includes(number)) {
         size = "SMALL"; color = "GREEN";     colorType = "green";
-    } else if ([2, 4, 6, 8].includes(number)) {
+    } else {
         size = "BIG";   color = "RED";       colorType = "red";
     }
 
@@ -162,45 +74,36 @@ function generateRandomSignal() {
 function updatePredictionUI() {
     const { number, size, color, colorType } = generateRandomSignal();
 
-    // Remove old animations
-    predictionNumberSpan.classList.remove('animate-pop');
-    sizeValueSpan.classList.remove('animate-pop');
-    colorValueSpan.classList.remove('animate-pop');
-    void predictionNumberSpan.offsetWidth; // reflow
+    predictionNumber.classList.remove('animate-pop');
+    sizeValue.classList.remove('animate-pop');
+    colorValue.classList.remove('animate-pop');
+    void predictionNumber.offsetWidth;
 
-    predictionNumberSpan.textContent = number;
-    sizeValueSpan.textContent        = size;
-    colorValueSpan.textContent       = color;
+    predictionNumber.textContent = number;
+    sizeValue.textContent        = size;
+    colorValue.textContent       = color;
 
-    // Clear old highlight
-    numberBoxSpan.classList.remove(
-        'color-green-text', 'color-red-text', 'color-violet-text'
-    );
-    sizeCard.classList.remove(
-        'bg-green-light', 'bg-red-light', 'bg-violet-light'
-    );
-    colorCard.classList.remove(
-        'bg-green-light', 'bg-red-light', 'bg-violet-light'
-    );
+    numberBox.classList.remove('color-green-text', 'color-red-text', 'color-violet-text');
+    sizeCard.classList.remove('bg-green-light', 'bg-red-light', 'bg-violet-light');
+    colorCard.classList.remove('bg-green-light', 'bg-red-light', 'bg-violet-light');
 
-    // Apply new highlight
     if (colorType === 'green') {
-        numberBoxSpan.classList.add('color-green-text');
+        numberBox.classList.add('color-green-text');
         sizeCard.classList.add('bg-green-light');
         colorCard.classList.add('bg-green-light');
     } else if (colorType === 'red') {
-        numberBoxSpan.classList.add('color-red-text');
+        numberBox.classList.add('color-red-text');
         sizeCard.classList.add('bg-red-light');
         colorCard.classList.add('bg-red-light');
     } else if (colorType === 'violet') {
-        numberBoxSpan.classList.add('color-violet-text');
+        numberBox.classList.add('color-violet-text');
         sizeCard.classList.add('bg-violet-light');
         colorCard.classList.add('bg-violet-light');
     }
 
-    predictionNumberSpan.classList.add('animate-pop');
-    sizeValueSpan.classList.add('animate-pop');
-    colorValueSpan.classList.add('animate-pop');
+    predictionNumber.classList.add('animate-pop');
+    sizeValue.classList.add('animate-pop');
+    colorValue.classList.add('animate-pop');
 }
 
 // ===== COUNTDOWN =====
@@ -244,40 +147,31 @@ function saveAndStart() {
     updatePredictionUI();
     startCountdown(selectedTimeSec);
 
-    statusBarSpan.textContent      = '🟢 RUNNING';
-    statusBarDiv.style.background  = 'rgba(0,170,85,0.2)';
-    statusBarSpan.style.color      = '#88ffcc';
+    statusText.textContent      = '🟢 RUNNING';
+    statusBar.style.background  = 'rgba(0,170,85,0.2)';
+    statusText.style.color      = '#88ffcc';
 
     modalOverlay.classList.remove('show');
 }
 
 // ===== STOP =====
 function stopAndReset() {
-    if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-    }
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
     isActive = false;
     timerSecondsSpan.innerText   = "0";
     periodDisplay.innerText      = currentPeriod;
 
-    predictionNumberSpan.textContent = "?";
-    sizeValueSpan.textContent        = "---";
-    colorValueSpan.textContent       = "---";
+    predictionNumber.textContent = "?";
+    sizeValue.textContent        = "---";
+    colorValue.textContent       = "---";
 
-    numberBoxSpan.classList.remove(
-        'color-green-text', 'color-red-text', 'color-violet-text'
-    );
-    sizeCard.classList.remove(
-        'bg-green-light', 'bg-red-light', 'bg-violet-light'
-    );
-    colorCard.classList.remove(
-        'bg-green-light', 'bg-red-light', 'bg-violet-light'
-    );
+    numberBox.classList.remove('color-green-text', 'color-red-text', 'color-violet-text');
+    sizeCard.classList.remove('bg-green-light', 'bg-red-light', 'bg-violet-light');
+    colorCard.classList.remove('bg-green-light', 'bg-red-light', 'bg-violet-light');
 
-    statusBarSpan.textContent     = '⚫ STOPPED';
-    statusBarDiv.style.background = 'rgba(50,50,50,0.35)';
-    statusBarSpan.style.color     = '#888';
+    statusText.textContent     = '⚫ STOPPED';
+    statusBar.style.background = 'rgba(50,50,50,0.35)';
+    statusText.style.color     = '#888';
 }
 
 // ===== TIME OPTIONS =====
@@ -290,7 +184,6 @@ timeOptions.forEach(btn => {
     });
 });
 
-// Default: 30 sec active
 document.querySelector('.time-option[data-time="30"]').classList.add('active');
 
 // ===== MODAL =====
@@ -317,9 +210,9 @@ modalStopBtn.addEventListener('click', () => {
 // ===== INITIAL PREVIEW =====
 function initialPreview() {
     const { number, size, color } = generateRandomSignal();
-    predictionNumberSpan.textContent = number;
-    sizeValueSpan.textContent        = size;
-    colorValueSpan.textContent       = color;
+    predictionNumber.textContent = number;
+    sizeValue.textContent        = size;
+    colorValue.textContent       = color;
 }
 
 periodInput.addEventListener('focus', (e) => e.stopPropagation());
